@@ -1,0 +1,1074 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Mock Server",
+    "version" : "1.0"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "paths" : {
+    "/api/correspondents" : {
+      "get" : {
+        "operationId" : "GetCorrespondents",
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Correspondents" ]
+      },
+      "post" : {
+        "operationId" : "CreateCorrespondent",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewCorrespondent"
+              }
+            },
+            "text/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewCorrespondent"
+              }
+            },
+            "application/*+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewCorrespondent"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Correspondents" ]
+      }
+    },
+    "/api/correspondents/{id}" : {
+      "delete" : {
+        "operationId" : "DeleteCorrespondent",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Correspondents" ]
+      },
+      "put" : {
+        "operationId" : "UpdateCorrespondent",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Correspondent"
+              }
+            },
+            "text/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Correspondent"
+              }
+            },
+            "application/*+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Correspondent"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Correspondents" ]
+      }
+    },
+    "/api/documents" : {
+      "get" : {
+        "operationId" : "GetDocuments",
+        "parameters" : [ {
+          "explode" : true,
+          "in" : "query",
+          "name" : "Page",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "page_size",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "ordering",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "tags__id__all",
+          "required" : false,
+          "schema" : {
+            "items" : {
+              "format" : "int32",
+              "type" : "integer"
+            },
+            "type" : "array"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "document_type__id",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "correspondent__id",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "truncate_content",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Documents" ]
+      }
+    },
+    "/api/documents/{id}" : {
+      "delete" : {
+        "operationId" : "DeleteDocument",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Documents" ]
+      },
+      "put" : {
+        "operationId" : "UpdateDocument",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Document"
+              }
+            },
+            "text/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Document"
+              }
+            },
+            "application/*+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Document"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Documents" ]
+      }
+    },
+    "/api/documents/post_document" : {
+      "post" : {
+        "operationId" : "UploadDocument",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "encoding" : {
+                "title" : {
+                  "style" : "form"
+                },
+                "created" : {
+                  "style" : "form"
+                },
+                "document_type" : {
+                  "style" : "form"
+                },
+                "tags" : {
+                  "style" : "form"
+                },
+                "correspondent" : {
+                  "style" : "form"
+                },
+                "document" : {
+                  "style" : "form"
+                }
+              },
+              "schema" : {
+                "$ref" : "#/components/schemas/UploadDocument_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Documents" ]
+      }
+    },
+    "/api/documents/{id}/thumb" : {
+      "get" : {
+        "operationId" : "GetDocumentThumb",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Documents" ]
+      }
+    },
+    "/api/documents/{id}/download" : {
+      "get" : {
+        "operationId" : "DownloadDocument",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "original",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Documents" ]
+      }
+    },
+    "/api/documents/{id}/preview" : {
+      "get" : {
+        "operationId" : "GetDocumentPreview",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Documents" ]
+      }
+    },
+    "/api/documents/{id}/metadata" : {
+      "get" : {
+        "operationId" : "GetDocumentMetadata",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Documents" ]
+      }
+    },
+    "/api/document_types" : {
+      "get" : {
+        "operationId" : "GetDocumentTypes",
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "DocumentTypes" ]
+      },
+      "post" : {
+        "operationId" : "CreateDocumentType",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewDocumentType"
+              }
+            },
+            "text/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewDocumentType"
+              }
+            },
+            "application/*+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewDocumentType"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "DocumentTypes" ]
+      }
+    },
+    "/api/document_types/{id}" : {
+      "delete" : {
+        "operationId" : "DeleteDocumentType",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "DocumentTypes" ]
+      },
+      "put" : {
+        "operationId" : "UpdateDocumentType",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DocumentType"
+              }
+            },
+            "text/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DocumentType"
+              }
+            },
+            "application/*+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DocumentType"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "DocumentTypes" ]
+      }
+    },
+    "/api" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Login" ]
+      },
+      "post" : {
+        "operationId" : "Root",
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Login" ]
+      }
+    },
+    "/api/statistics" : {
+      "get" : {
+        "operationId" : "Statistics",
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Login" ]
+      }
+    },
+    "/api/token" : {
+      "post" : {
+        "operationId" : "GetToken",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserInfo"
+              }
+            },
+            "text/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserInfo"
+              }
+            },
+            "application/*+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserInfo"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Login" ]
+      }
+    },
+    "/api/search/autocomplete" : {
+      "get" : {
+        "operationId" : "AutoComplete",
+        "parameters" : [ {
+          "explode" : true,
+          "in" : "query",
+          "name" : "term",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Search" ]
+      }
+    },
+    "/api/tags" : {
+      "get" : {
+        "operationId" : "GetTags",
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Tags" ]
+      },
+      "post" : {
+        "operationId" : "CreateTag",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewTag"
+              }
+            },
+            "text/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewTag"
+              }
+            },
+            "application/*+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NewTag"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Tags" ]
+      }
+    },
+    "/api/tags/{id}" : {
+      "delete" : {
+        "operationId" : "DeleteTag",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Tags" ]
+      },
+      "put" : {
+        "operationId" : "UpdateTag",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DocTag"
+              }
+            },
+            "text/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DocTag"
+              }
+            },
+            "application/*+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DocTag"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        },
+        "tags" : [ "Tags" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Correspondent" : {
+        "additionalProperties" : false,
+        "example" : {
+          "matching_algorithm" : 6,
+          "document_count" : 1,
+          "is_insensitive" : true,
+          "name" : "name",
+          "match" : "match",
+          "id" : 0,
+          "last_correspondence" : "2000-01-23T04:56:07.000+00:00",
+          "slug" : "slug"
+        },
+        "properties" : {
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "slug" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "name" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "match" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "matching_algorithm" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "is_insensitive" : {
+            "type" : "boolean"
+          },
+          "document_count" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "last_correspondence" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "Document" : {
+        "additionalProperties" : false,
+        "example" : {
+          "archive_serial_number" : "archive_serial_number",
+          "added" : "2000-01-23T04:56:07.000+00:00",
+          "created" : "2000-01-23T04:56:07.000+00:00",
+          "title" : "title",
+          "content" : "content",
+          "tags" : [ 5, 5 ],
+          "storage_path" : 5,
+          "archived_file_name" : "archived_file_name",
+          "modified" : "2000-01-23T04:56:07.000+00:00",
+          "correspondent" : 6,
+          "original_file_name" : "original_file_name",
+          "id" : 0,
+          "created_date" : "2000-01-23T04:56:07.000+00:00",
+          "document_type" : 1
+        },
+        "properties" : {
+          "id" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "correspondent" : {
+            "format" : "int32",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "document_type" : {
+            "format" : "int32",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "storage_path" : {
+            "format" : "int32",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "title" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "content" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "tags" : {
+            "items" : {
+              "format" : "int32",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array"
+          },
+          "created" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "created_date" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "modified" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "added" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "archive_serial_number" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "original_file_name" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "archived_file_name" : {
+            "nullable" : true,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DocumentType" : {
+        "additionalProperties" : false,
+        "example" : {
+          "matching_algorithm" : 6,
+          "document_count" : 1,
+          "is_insensitive" : true,
+          "name" : "name",
+          "match" : "match",
+          "id" : 0,
+          "slug" : "slug"
+        },
+        "properties" : {
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "slug" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "name" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "match" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "matching_algorithm" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "is_insensitive" : {
+            "type" : "boolean"
+          },
+          "document_count" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "NewCorrespondent" : {
+        "additionalProperties" : false,
+        "example" : {
+          "matching_algorithm" : 0,
+          "document_count" : 6,
+          "is_insensitive" : true,
+          "name" : "name",
+          "match" : "match",
+          "last_correspondence" : "2000-01-23T04:56:07.000+00:00"
+        },
+        "properties" : {
+          "name" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "match" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "matching_algorithm" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "is_insensitive" : {
+            "type" : "boolean"
+          },
+          "document_count" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "last_correspondence" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "NewDocumentType" : {
+        "additionalProperties" : false,
+        "example" : {
+          "matching_algorithm" : 0,
+          "is_insensitive" : true,
+          "name" : "name",
+          "match" : "match"
+        },
+        "properties" : {
+          "name" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "match" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "matching_algorithm" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "is_insensitive" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "NewTag" : {
+        "additionalProperties" : false,
+        "example" : {
+          "matching_algorithm" : 0,
+          "color" : "color",
+          "is_insensitive" : true,
+          "name" : "name",
+          "match" : "match",
+          "is_inbox_tag" : true
+        },
+        "properties" : {
+          "name" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "color" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "match" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "matching_algorithm" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "is_insensitive" : {
+            "type" : "boolean"
+          },
+          "is_inbox_tag" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "DocTag" : {
+        "additionalProperties" : false,
+        "example" : {
+          "matching_algorithm" : 6,
+          "document_count" : 1,
+          "color" : "color",
+          "is_insensitive" : true,
+          "name" : "name",
+          "match" : "match",
+          "id" : 0,
+          "is_inbox_tag" : true,
+          "slug" : "slug"
+        },
+        "properties" : {
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "slug" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "name" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "color" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "match" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "matching_algorithm" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "is_insensitive" : {
+            "type" : "boolean"
+          },
+          "is_inbox_tag" : {
+            "type" : "boolean"
+          },
+          "document_count" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "UserInfo" : {
+        "additionalProperties" : false,
+        "example" : {
+          "password" : "password",
+          "username" : "username"
+        },
+        "properties" : {
+          "username" : {
+            "nullable" : true,
+            "type" : "string"
+          },
+          "password" : {
+            "nullable" : true,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "UploadDocument_request" : {
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "created" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "document_type" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "tags" : {
+            "items" : {
+              "format" : "int32",
+              "type" : "integer"
+            },
+            "type" : "array"
+          },
+          "correspondent" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "document" : {
+            "items" : {
+              "format" : "binary",
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      }
+    }
+  }
+}
