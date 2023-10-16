@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  web:
+    build: ./paperless-ngx-ui
+    ports:
+      - "80:80"
