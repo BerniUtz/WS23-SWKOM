@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless", "SWKOM-paperless\SWKOM-paperless.csproj", "{96F2E125-CD32-4FB3-AB72-4E1F7F35159F}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM-paperless", "SWKOM-paperless\SWKOM-paperless.csproj", "{96F2E125-CD32-4FB3-AB72-4E1F7F35159F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.BusinessLogic.Entities", "SWKOM-paperless.BusinessLogic.Entities\SWKOM-paperless.BusinessLogic.Entities.csproj", "{48B197DF-F021-455F-B4F5-C1A28078D34C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.BusinessLogic.Interfaces", "SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj", "{FE4E960B-2863-4D56-8808-773EF513998E}"
 EndProject
