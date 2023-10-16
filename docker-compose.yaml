@@ -5,3 +5,15 @@ services:
     build: ./paperless-ngx-ui
     ports:
       - "80:80"
+        
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: paperless
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
+
+volumes: 
+    postgres_data:
