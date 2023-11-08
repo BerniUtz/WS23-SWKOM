@@ -24,6 +24,9 @@ using Org.OpenAPITools.Authentication;
 using Org.OpenAPITools.Filters;
 using Org.OpenAPITools.OpenApi;
 using Org.OpenAPITools.Formatters;
+using SWKOM_paperless.DAL;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace Org.OpenAPITools
 {
@@ -99,6 +102,11 @@ namespace Org.OpenAPITools
                 });
                 services
                     .AddSwaggerGenNewtonsoftSupport();
+                
+                // DB Context zum Service hinzufügen
+                // Connectionstring wird aus appsettings.json gelesen
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         /// <summary>
