@@ -1,0 +1,547 @@
+import { DOCUMENT } from '@angular/common'
+import { HttpClient } from '@angular/common/http'
+import {
+  EventEmitter,
+  Inject,
+  Injectable,
+  LOCALE_ID,
+  Renderer2,
+  RendererFactory2,
+} from '@angular/core'
+import { Meta } from '@angular/platform-browser'
+import { CookieService } from 'ngx-cookie-service'
+import { first, Observable, tap } from 'rxjs'
+import {
+  BRIGHTNESS,
+  estimateBrightnessForColor,
+  hexToHsl,
+} from 'src/app/utils/color'
+import { environment } from 'src/environments/environment'
+import {
+  PaperlessUiSettings,
+  SETTINGS,
+  SETTINGS_KEYS,
+} from '../data/paperless-uisettings'
+import { PaperlessUser } from '../data/paperless-user'
+import { PermissionsService } from './permissions.service'
+import { SavedViewService } from './rest/saved-view.service'
+import { ToastService } from './toast.service'
+import { PaperlessSavedView } from '../data/paperless-saved-view'
+
+export interface LanguageOption {
+  code: string
+  name: string
+  englishName?: string
+
+  /**
+   * A date format string for use by the date selectors. MUST contain 'yyyy', 'mm' and 'dd'.
+   */
+  dateInputFormat?: string
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SettingsService {
+  protected baseUrl: string = environment.apiBaseUrl + 'ui_settings/'
+
+  private settings: Object = {}
+  currentUser: PaperlessUser
+
+  public settingsSaved: EventEmitter<any> = new EventEmitter()
+
+  private _renderer: Renderer2
+  public get renderer(): Renderer2 {
+    return this._renderer
+  }
+
+  public globalDropzoneEnabled: boolean = true
+  public globalDropzoneActive: boolean = false
+
+  constructor(
+    rendererFactory: RendererFactory2,
+    @Inject(DOCUMENT) private document,
+    private cookieService: CookieService,
+    private meta: Meta,
+    @Inject(LOCALE_ID) private localeId: string,
+    protected http: HttpClient,
+    private toastService: ToastService,
+    private savedViewService: SavedViewService,
+    private permissionsService: PermissionsService
+  ) {
+    this._renderer = rendererFactory.createRenderer(null, null)
+  }
+
+  // this is called by the app initializer in app.module
+  public initializeSettings(): Observable<PaperlessUiSettings> {
+    return this.http.get<PaperlessUiSettings>(this.baseUrl).pipe(
+      first(),
+      tap((uisettings) => {
+        Object.assign(this.settings, uisettings.settings)
+        this.maybeMigrateSettings()
+        // to update lang cookie
+        if (this.settings['language']?.length)
+          this.setLanguage(this.settings['language'])
+        this.currentUser = uisettings.user
+        this.permissionsService.initialize(
+          uisettings.permissions,
+          this.currentUser
+        )
+      })
+    )
+  }
+
+  get displayName(): string {
+    return (
+      this.currentUser.first_name ??
+      this.currentUser.username ??
+      ''
+    ).trim()
+  }
+
+  public updateAppearanceSettings(
+    darkModeUseSystem = null,
+    darkModeEnabled = null,
+    themeColor = null
+  ): void {
+    darkModeUseSystem ??= this.get(SETTINGS_KEYS.DARK_MODE_USE_SYSTEM)
+    darkModeEnabled ??= this.get(SETTINGS_KEYS.DARK_MODE_ENABLED)
+    themeColor ??= this.get(SETTINGS_KEYS.THEME_COLOR)
+
+    if (darkModeUseSystem) {
+      this._renderer.setAttribute(
+        this.document.documentElement,
+        'data-bs-theme',
+        'auto'
+      )
+    } else {
+      this._renderer.setAttribute(
+        this.document.documentElement,
+        'data-bs-theme',
+        darkModeEnabled ? 'dark' : 'light'
+      )
+    }
+
+    if (themeColor) {
+      const hsl = hexToHsl(themeColor)
+      const bgBrightnessEstimate = estimateBrightnessForColor(themeColor)
+
+      if (bgBrightnessEstimate == BRIGHTNESS.DARK) {
+        this._renderer.addClass(this.document.body, 'primary-dark')
+        this._renderer.removeClass(this.document.body, 'primary-light')
+      } else {
+        this._renderer.addClass(this.document.body, 'primary-light')
+        this._renderer.removeClass(this.document.body, 'primary-dark')
+      }
+      document.documentElement.style.setProperty(
+        '--pngx-primary',
+        `${+hsl.h * 360},${hsl.s * 100}%`
+      )
+      document.documentElement.style.setProperty(
+        '--pngx-primary-lightness',
+        `${hsl.l * 100}%`
+      )
+    } else {
+      document.documentElement.style.removeProperty('--pngx-primary')
+      document.documentElement.style.removeProperty('--pngx-primary-lightness')
+    }
+  }
+
+  getLanguageOptions(): LanguageOption[] {
+    const languages = [
+      {
+        code: 'en-us',
+        name: $localize`English (US)`,
+        englishName: 'English (US)',
+        dateInputFormat: 'mm/dd/yyyy',
+      },
+      {
+        code: 'af-za',
+        name: $localize`Afrikaans`,
+        englishName: 'Afrikaans',
+        dateInputFormat: 'yyyy-mm-dd',
+      },
+      {
+        code: 'ar-ar',
+        name: $localize`Arabic`,
+        englishName: 'Arabic',
+        dateInputFormat: 'yyyy-mm-dd',
+      },
+      {
+        code: 'be-by',
+        name: $localize`Belarusian`,
+        englishName: 'Belarusian',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'ca-es',
+        name: $localize`Catalan`,
+        englishName: 'Catalan',
+        dateInputFormat: 'dd/mm/yyyy',
+      },
+      {
+        code: 'cs-cz',
+        name: $localize`Czech`,
+        englishName: 'Czech',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'da-dk',
+        name: $localize`Danish`,
+        englishName: 'Danish',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'de-de',
+        name: $localize`German`,
+        englishName: 'German',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'el-gr',
+        name: $localize`Greek`,
+        englishName: 'Greek',
+        dateInputFormat: 'dd/mm/yyyy',
+      },
+      {
+        code: 'en-gb',
+        name: $localize`English (GB)`,
+        englishName: 'English (GB)',
+        dateInputFormat: 'dd/mm/yyyy',
+      },
+      {
+        code: 'es-es',
+        name: $localize`Spanish`,
+        englishName: 'Spanish',
+        dateInputFormat: 'dd/mm/yyyy',
+      },
+      {
+        code: 'fi-fi',
+        name: $localize`Finnish`,
+        englishName: 'Finnish',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'fr-fr',
+        name: $localize`French`,
+        englishName: 'French',
+        dateInputFormat: 'dd/mm/yyyy',
+      },
+      {
+        code: 'it-it',
+        name: $localize`Italian`,
+        englishName: 'Italian',
+        dateInputFormat: 'dd/mm/yyyy',
+      },
+      {
+        code: 'lb-lu',
+        name: $localize`Luxembourgish`,
+        englishName: 'Luxembourgish',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'nl-nl',
+        name: $localize`Dutch`,
+        englishName: 'Dutch',
+        dateInputFormat: 'dd-mm-yyyy',
+      },
+      {
+        code: 'no-no',
+        name: $localize`Norwegian`,
+        englishName: 'Norwegian',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'pl-pl',
+        name: $localize`Polish`,
+        englishName: 'Polish',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'pt-br',
+        name: $localize`Portuguese (Brazil)`,
+        englishName: 'Portuguese (Brazil)',
+        dateInputFormat: 'dd/mm/yyyy',
+      },
+      {
+        code: 'pt-pt',
+        name: $localize`Portuguese`,
+        englishName: 'Portuguese',
+        dateInputFormat: 'dd/mm/yyyy',
+      },
+      {
+        code: 'ro-ro',
+        name: $localize`Romanian`,
+        englishName: 'Romanian',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'ru-ru',
+        name: $localize`Russian`,
+        englishName: 'Russian',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'sk-sk',
+        name: $localize`Slovak`,
+        englishName: 'Slovak',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'sl-si',
+        name: $localize`Slovenian`,
+        englishName: 'Slovenian',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'sr-cs',
+        name: $localize`Serbian`,
+        englishName: 'Serbian',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'sv-se',
+        name: $localize`Swedish`,
+        englishName: 'Swedish',
+        dateInputFormat: 'yyyy-mm-dd',
+      },
+      {
+        code: 'tr-tr',
+        name: $localize`Turkish`,
+        englishName: 'Turkish',
+        dateInputFormat: 'yyyy-mm-dd',
+      },
+      {
+        code: 'uk-ua',
+        name: $localize`Ukrainian`,
+        englishName: 'Ukrainian',
+        dateInputFormat: 'dd.mm.yyyy',
+      },
+      {
+        code: 'zh-cn',
+        name: $localize`Chinese Simplified`,
+        englishName: 'Chinese Simplified',
+        dateInputFormat: 'yyyy-mm-dd',
+      },
+    ]
+
+    // Sort languages by localized name at runtime
+    languages.sort((a, b) => {
+      return a.name < b.name ? -1 : 1
+    })
+
+    return languages
+  }
+
+  getDateLocaleOptions(): LanguageOption[] {
+    let isoOption: LanguageOption = {
+      code: 'iso-8601',
+      name: $localize`ISO 8601`,
+      dateInputFormat: 'yyyy-mm-dd',
+    }
+    return [isoOption].concat(this.getLanguageOptions())
+  }
+
+  private getLanguageCookieName() {
+    let prefix = ''
+    if (this.meta.getTag('name=cookie_prefix')) {
+      prefix = this.meta.getTag('name=cookie_prefix').content
+    }
+    return `${prefix || ''}django_language`
+  }
+
+  getLanguage(): string {
+    return this.get(SETTINGS_KEYS.LANGUAGE)
+  }
+
+  setLanguage(language: string) {
+    this.set(SETTINGS_KEYS.LANGUAGE, language)
+    if (language?.length) {
+      // for Django
+      this.cookieService.set(this.getLanguageCookieName(), language)
+    } else {
+      this.cookieService.delete(this.getLanguageCookieName())
+    }
+  }
+
+  getLocalizedDateInputFormat(): string {
+    let dateLocale =
+      this.get(SETTINGS_KEYS.DATE_LOCALE) ||
+      this.getLanguage() ||
+      this.localeId.toLowerCase()
+    return (
+      this.getDateLocaleOptions().find((o) => o.code == dateLocale)
+        ?.dateInputFormat || 'yyyy-mm-dd'
+    )
+  }
+
+  private getSettingRawValue(key: string): any {
+    let value = undefined
+    // parse key:key:key into nested object
+    const keys = key.replace('general-settings:', '').split(':')
+    let settingObj = this.settings
+    keys.forEach((keyPart, index) => {
+      keyPart = keyPart.replace(/-/g, '_')
+      if (!settingObj.hasOwnProperty(keyPart)) return
+      if (index == keys.length - 1) value = settingObj[keyPart]
+      else settingObj = settingObj[keyPart]
+    })
+    return value
+  }
+
+  get(key: string): any {
+    let setting = SETTINGS.find((s) => s.key == key)
+
+    if (!setting) {
+      return undefined
+    }
+
+    let value = this.getSettingRawValue(key)
+
+    // special case to fallback
+    if (key === SETTINGS_KEYS.DEFAULT_PERMS_OWNER && value === undefined) {
+      return this.currentUser.id
+    }
+
+    if (value !== undefined) {
+      if (value === null) {
+        return null
+      }
+      switch (setting.type) {
+        case 'boolean':
+          return JSON.parse(value)
+        case 'number':
+          return +value
+        case 'string':
+          return value
+        default:
+          return value
+      }
+    } else {
+      return setting.default
+    }
+  }
+
+  set(key: string, value: any) {
+    // parse key:key:key into nested object
+    let settingObj = this.settings
+    const keys = key.replace('general-settings:', '').split(':')
+    keys.forEach((keyPart, index) => {
+      keyPart = keyPart.replace(/-/g, '_')
+      if (!settingObj.hasOwnProperty(keyPart)) settingObj[keyPart] = {}
+      if (index == keys.length - 1) settingObj[keyPart] = value
+      else settingObj = settingObj[keyPart]
+    })
+  }
+
+  private settingIsSet(key: string): boolean {
+    let value = this.getSettingRawValue(key)
+    return value != undefined
+  }
+
+  storeSettings(): Observable<any> {
+    return this.http.post(this.baseUrl, { settings: this.settings }).pipe(
+      tap((results) => {
+        if (results.success) {
+          this.settingsSaved.emit()
+        }
+      })
+    )
+  }
+
+  maybeMigrateSettings() {
+    if (
+      !this.settings.hasOwnProperty('documentListSize') &&
+      localStorage.getItem(SETTINGS_KEYS.DOCUMENT_LIST_SIZE)
+    ) {
+      // lets migrate
+      const successMessage = $localize`Successfully completed one-time migratration of settings to the database!`
+      const errorMessage = $localize`Unable to migrate settings to the database, please try saving manually.`
+
+      try {
+        for (const setting in SETTINGS_KEYS) {
+          const key = SETTINGS_KEYS[setting]
+          const value = localStorage.getItem(key)
+          this.set(key, value)
+        }
+        this.set(
+          SETTINGS_KEYS.LANGUAGE,
+          this.cookieService.get(this.getLanguageCookieName())
+        )
+      } catch (error) {
+        this.toastService.showError(errorMessage)
+        console.log(error)
+      }
+
+      this.storeSettings()
+        .pipe(first())
+        .subscribe({
+          next: () => {
+            this.updateAppearanceSettings()
+            this.toastService.showInfo(successMessage)
+          },
+          error: (e) => {
+            this.toastService.showError(errorMessage)
+            console.log(e)
+          },
+        })
+    }
+
+    if (
+      !this.settingIsSet(SETTINGS_KEYS.UPDATE_CHECKING_ENABLED) &&
+      this.get(SETTINGS_KEYS.UPDATE_CHECKING_BACKEND_SETTING) != 'default'
+    ) {
+      this.set(
+        SETTINGS_KEYS.UPDATE_CHECKING_ENABLED,
+        this.get(SETTINGS_KEYS.UPDATE_CHECKING_BACKEND_SETTING).toString() ===
+          'true'
+      )
+
+      this.storeSettings()
+        .pipe(first())
+        .subscribe({
+          error: (e) => {
+            this.toastService.showError(
+              'Error migrating update checking setting'
+            )
+            console.log(e)
+          },
+        })
+    }
+  }
+
+  get updateCheckingIsSet(): boolean {
+    return this.settingIsSet(SETTINGS_KEYS.UPDATE_CHECKING_ENABLED)
+  }
+
+  offerTour(): boolean {
+    return (
+      !this.savedViewService.loading &&
+      this.savedViewService.dashboardViews.length == 0 &&
+      !this.get(SETTINGS_KEYS.TOUR_COMPLETE)
+    )
+  }
+
+  completeTour() {
+    const tourCompleted = this.get(SETTINGS_KEYS.TOUR_COMPLETE)
+    if (!tourCompleted) {
+      this.set(SETTINGS_KEYS.TOUR_COMPLETE, true)
+      this.storeSettings()
+        .pipe(first())
+        .subscribe(() => {
+          this.toastService.showInfo(
+            $localize`You can restart the tour from the settings page.`
+          )
+        })
+    }
+  }
+
+  updateDashboardViewsSort(
+    dashboardViews: PaperlessSavedView[]
+  ): Observable<any> {
+    this.set(SETTINGS_KEYS.DASHBOARD_VIEWS_SORT_ORDER, [
+      ...new Set(dashboardViews.map((v) => v.id)),
+    ])
+    return this.storeSettings()
+  }
+}
