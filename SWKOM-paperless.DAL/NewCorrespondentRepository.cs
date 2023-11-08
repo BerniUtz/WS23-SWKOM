@@ -22,7 +22,7 @@ public class NewCorrespondentRepository
         return _context.Elements?.ToList();
     }
     
-    public NewCorrespondent? GetNewCorrespondentById(string name)
+    public NewCorrespondent? GetNewCorrespondentByName(string name)
     {
         return _context.Elements?.Find(name);
     }

@@ -22,7 +22,7 @@ public class UserInfoRepository
         return _context.Elements?.ToList();
     }
     
-    public UserInfo? GetUserInfoById(string username)
+    public UserInfo? GetUserInfoByUsername(string username)
     {
         return _context.Elements?.Find(username);
     }
