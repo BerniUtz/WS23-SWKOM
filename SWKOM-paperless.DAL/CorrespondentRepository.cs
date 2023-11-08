@@ -4,35 +4,35 @@ namespace SWKOM_paperless.DAL;
 
 public class CorrespondentRepository
 {
-    private readonly ApplicationDbContext<Correspondent> _context;
+    private readonly ApplicationDbContext _context;
     
-    public CorrespondentRepository(ApplicationDbContext<Correspondent> context)
+    public CorrespondentRepository(ApplicationDbContext context)
     {
         _context = context;
     }
     
     public void AddCorrespondent(Correspondent correspondent)
     {
-        _context.Elements?.Add(correspondent);
+        _context.Correspondents?.Add(correspondent);
         _context.SaveChanges();
     }
     
     public IEnumerable<Correspondent>? GetAllCorrespondents()
     {
-        return _context.Elements?.ToList();
+        return _context.Correspondents?.ToList();
     }
     
     public Correspondent? GetCorrespondentById(int id)
     {
-        return _context.Elements?.Find(id);
+        return _context.Correspondents?.Find(id);
     }
     
     public void DeleteCorrespondent(int id)
     {
-        var correspondent = _context.Elements?.Find(id);
+        var correspondent = _context.Correspondents?.Find(id);
         if (correspondent == null) return;
         
-        _context.Elements?.Remove(correspondent);
+        _context.Correspondents?.Remove(correspondent);
         _context.SaveChanges();
     }
 }

@@ -2,37 +2,37 @@ using SWKOM_paperless.BusinessLogic.Entities;
 
 namespace SWKOM_paperless.DAL;
 
-public class NewDocumentTypeRepository
+public class NewDocumentTypesRepository
 {
-    private readonly ApplicationDbContext<NewDocumentType> _context;
+    private readonly ApplicationDbContext _context;
     
-    public NewDocumentTypeRepository(ApplicationDbContext<NewDocumentType> context)
+    public NewDocumentTypesRepository(ApplicationDbContext context)
     {
         _context = context;
     }
     
-    public void AddNewDocumentType(NewDocumentType newDocumentType)
+    public void AddNewDocumentTypes(NewDocumentType NewDocumentTypes)
     {
-        _context.Elements?.Add(newDocumentType);
+        _context.NewDocumentTypes?.Add(NewDocumentTypes);
         _context.SaveChanges();
     }
     
-    public IEnumerable<NewDocumentType>? GetAllNewDocumentTypes()
+    public IEnumerable<NewDocumentType>? GetAllNewDocumentTypess()
     {
-        return _context.Elements?.ToList();
+        return _context.NewDocumentTypes?.ToList();
     }
     
-    public NewDocumentType? GetNewDocumentTypeByName(string name)
+    public NewDocumentType? GetNewDocumentTypesByName(string name)
     {
-        return _context.Elements?.Find(name);
+        return _context.NewDocumentTypes?.Find(name);
     }
     
-    public void DeleteNewDocumentType(string name)
+    public void DeleteNewDocumentTypes(string name)
     {
-        var newDocumentType = _context.Elements?.Find(name);
-        if (newDocumentType == null) return;
+        var NewDocumentTypes = _context.NewDocumentTypes?.Find(name);
+        if (NewDocumentTypes == null) return;
         
-        _context.Elements?.Remove(newDocumentType);
+        _context.NewDocumentTypes?.Remove(NewDocumentTypes);
         _context.SaveChanges();
     }
 }
