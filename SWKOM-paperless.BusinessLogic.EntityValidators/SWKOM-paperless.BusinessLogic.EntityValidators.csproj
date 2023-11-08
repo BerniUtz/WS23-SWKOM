@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Entities\SWKOM-paperless.BusinessLogic.Entities.csproj" />
   </ItemGroup>
 
