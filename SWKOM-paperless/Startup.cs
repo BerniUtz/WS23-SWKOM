@@ -52,6 +52,17 @@ namespace Org.OpenAPITools
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            // ignore CORS
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             // Add framework services.
             services
@@ -74,8 +85,8 @@ namespace Org.OpenAPITools
                     
                     c.SwaggerDoc("1.0", new OpenApiInfo
                     {
-                        Title = "Mock Server",
-                        Description = "Mock Server (ASP.NET Core 6.0)",
+                        Title = "Paperless API Server",
+                        Description = "",
                         TermsOfService = new Uri("https://github.com/openapitools/openapi-generator"),
                         Contact = new OpenApiContact
                         {
@@ -135,6 +146,7 @@ namespace Org.OpenAPITools
                     // c.SwaggerEndpoint("/openapi-original.json", "Mock Server Original");
                 });
             app.UseRouting();
+            app.UseCors();
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
