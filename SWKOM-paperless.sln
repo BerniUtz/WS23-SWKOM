@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM_paperless.BusinessLog
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM_paperless.Tests", "SWKOM_paperless.Tests\SWKOM_paperless.Tests.csproj", "{AE740FE8-9975-4AFF-9E7E-2D4E42E0F34F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.DAL", "SWKOM-paperless.DAL\SWKOM-paperless.DAL.csproj", "{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,5 +39,9 @@ Global
 		{AE740FE8-9975-4AFF-9E7E-2D4E42E0F34F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE740FE8-9975-4AFF-9E7E-2D4E42E0F34F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE740FE8-9975-4AFF-9E7E-2D4E42E0F34F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
