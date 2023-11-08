@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM-paperless", "SWKOM-pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.BusinessLogic.Entities", "SWKOM-paperless.BusinessLogic.Entities\SWKOM-paperless.BusinessLogic.Entities.csproj", "{48B197DF-F021-455F-B4F5-C1A28078D34C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.BusinessLogic.Interfaces", "SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj", "{FE4E960B-2863-4D56-8808-773EF513998E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mock Server", "SWKOM-paperless.MockAPI\Mock Server.csproj", "{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,15 +21,15 @@ Global
 		{96F2E125-CD32-4FB3-AB72-4E1F7F35159F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96F2E125-CD32-4FB3-AB72-4E1F7F35159F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96F2E125-CD32-4FB3-AB72-4E1F7F35159F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE4E960B-2863-4D56-8808-773EF513998E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE4E960B-2863-4D56-8808-773EF513998E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE4E960B-2863-4D56-8808-773EF513998E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE4E960B-2863-4D56-8808-773EF513998E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48B197DF-F021-455F-B4F5-C1A28078D34C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{48B197DF-F021-455F-B4F5-C1A28078D34C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48B197DF-F021-455F-B4F5-C1A28078D34C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48B197DF-F021-455F-B4F5-C1A28078D34C}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {17667BC4-FA8A-491B-B385-DA323A225DDD}
+		{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
