@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWKOM_paperless.BusinessLogic.Entities
 {
-    public class UserInfo
+    internal class UserInfo
     {
         public string Username { get; set; }
         public string Password { get; set; }
