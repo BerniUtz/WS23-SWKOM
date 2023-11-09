@@ -11,4 +11,8 @@
       <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Minio" Version="6.0.0" />
+    </ItemGroup>
+
 </Project>

@@ -10,8 +10,7 @@ namespace SWKOM_paperless.BusinessLogic.Interfaces
         /// </summary>
         /// <param name="fileStream">The stream representing the file to upload.</param>
         /// <param name="filePath">The path within the bucket where the file will be stored, including the file name.</param>
-        /// <returns>The URL to the uploaded file.</returns>
-        Task<string> UploadFileAsync(Stream fileStream, string filePath);
+        Task UploadFileAsync(Stream fileStream, string filePath);
 
         /// <summary>
         /// Retrieves a file from the configured bucket in the storage service.
