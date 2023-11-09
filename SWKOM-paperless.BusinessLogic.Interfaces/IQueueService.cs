@@ -23,7 +23,7 @@ namespace SWKOM_paperless.BusinessLogic.Interfaces
         ///     A task that represents the asynchronous dequeue operation. The task result contains the deserialized object.
         ///     If the queue is empty, the result should default(T).
         /// </returns>
-        Task<T> DequeueAsync<T>(string queueName);
+        Task<T> DequeueAsync<T>(string queueName) where T : class;
 
         /// <summary>
         ///     Checks if the specified queue exists.
