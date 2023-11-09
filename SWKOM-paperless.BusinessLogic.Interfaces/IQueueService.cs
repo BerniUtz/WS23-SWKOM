@@ -48,5 +48,12 @@ namespace SWKOM_paperless.BusinessLogic.Interfaces
         /// <param name="queueName">The name of the queue to delete.</param>
         /// <returns>A task that represents the asynchronous queue deletion operation.</returns>
         Task DeleteQueueAsync(string queueName);
+        
+        /// <summary>
+        ///     Ensures that the specified queue exists.
+        /// </summary>
+        /// <param name="queueName">The name of the queue to ensure.</param>
+        /// <returns>A task that represents the asynchronous queue creation operation if the queue did not exist.</returns>
+        Task EnsureQueueExistsAsync(string queueName);
     }
 }

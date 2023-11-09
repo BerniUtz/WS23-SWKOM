@@ -186,7 +186,8 @@ namespace Org.OpenAPITools.Controllers
             [FromForm(Name = "tags")] List<int> tags,
             [FromForm(Name = "correspondent")] int? correspondent,
             [FromForm(Name = "document")] List<IFormFile> document,
-            [FromServices] IFileStorageService fileStorageService)
+            [FromServices] IFileStorageService fileStorageService,
+            [FromServices] IQueueService queueService)
         {
             // check if file(s) were uploaded
             if (document == null || document.Count == 0)
@@ -209,7 +210,16 @@ namespace Org.OpenAPITools.Controllers
                 
                 // upload file
                 await fileStorageService.UploadFileAsync(file.OpenReadStream(), fileName);
+
+                var message = new
+                {
+                    FilePath = fileName,
+                };
                 
+                // enqueue message for  OCR
+                await queueService.EnsureQueueExistsAsync("ocr_queue"); // TODO: move to startup or any other global place so it is only called once
+                await queueService.EnqueueAsync("ocr_queue", message);
+
                 // TODO: save file name to database
             }
 
