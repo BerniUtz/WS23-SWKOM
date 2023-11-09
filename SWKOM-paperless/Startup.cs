@@ -26,6 +26,9 @@ using Org.OpenAPITools.OpenApi;
 using Org.OpenAPITools.Formatters;
 using SWKOM_paperless.BusinessLogic;
 using SWKOM_paperless.BusinessLogic.Interfaces;
+using SWKOM_paperless.DAL;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace Org.OpenAPITools
 {
@@ -78,6 +81,11 @@ namespace Org.OpenAPITools
                     minioOptions.BucketName
                     );
             });
+            
+            // DB Context zum Service hinzufügen
+            // Connectionstring wird aus appsettings.json gelesen
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add framework services.
             services
@@ -123,8 +131,9 @@ namespace Org.OpenAPITools
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
                 });
-                services
-                    .AddSwaggerGenNewtonsoftSupport();
+            
+            services
+                .AddSwaggerGenNewtonsoftSupport();
         }
 
         /// <summary>

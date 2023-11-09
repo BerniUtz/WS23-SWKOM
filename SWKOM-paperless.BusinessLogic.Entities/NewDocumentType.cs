@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWKOM_paperless.BusinessLogic.Entities
 {
-    internal class NewDocumentType
+    public class NewDocumentType
     {
         public string Name { get; set; }
         public string Match { get; set; }
