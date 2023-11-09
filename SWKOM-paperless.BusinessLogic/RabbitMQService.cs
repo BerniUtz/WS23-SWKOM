@@ -9,9 +9,9 @@ public class RabbitMQService: IQueueService
 {
     private readonly IModel _channel;
 
-    public RabbitMQService(string hostname, string username, string password)
+    public RabbitMQService(string hostname, string username, string password, int port = 5672)
     {
-        var factory = new ConnectionFactory() {HostName = hostname, UserName = username, Password = password};
+        var factory = new ConnectionFactory() {HostName = hostname, UserName = username, Password = password, Port = port};
         var connection = factory.CreateConnection();
         _channel = connection.CreateModel();
     }
@@ -68,4 +68,12 @@ public class RabbitMQService: IQueueService
             return Task.FromResult(false);
         }
     }
+}
+
+public class RabbitMQOptions
+{
+    public required string Hostname { get; set; }
+    public int Port { get; set; } = 5672;
+    public required string Username { get; set; }
+    public required string Password { get; set; }
 }
