@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>SWKOM_paperless.BusinessLogic</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj" />
+    </ItemGroup>
+
+</Project>
