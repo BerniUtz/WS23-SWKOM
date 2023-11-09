@@ -24,6 +24,8 @@ using Org.OpenAPITools.Authentication;
 using Org.OpenAPITools.Filters;
 using Org.OpenAPITools.OpenApi;
 using Org.OpenAPITools.Formatters;
+using SWKOM_paperless.BusinessLogic;
+using SWKOM_paperless.BusinessLogic.Interfaces;
 
 namespace Org.OpenAPITools
 {
@@ -62,6 +64,19 @@ namespace Org.OpenAPITools
                            .AllowAnyMethod()
                            .AllowAnyHeader();
                 });
+            });
+            
+            // Add FileStorageService
+            services.AddSingleton<IFileStorageService, MinioFileStorageService>(sp =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var minioOptions = config.GetSection("MinIO").Get<MinIOOptions>();
+                return new MinioFileStorageService(
+                    minioOptions.Endpoint, 
+                    minioOptions.AccessKey, 
+                    minioOptions.SecretKey, 
+                    minioOptions.BucketName
+                    );
             });
 
             // Add framework services.
