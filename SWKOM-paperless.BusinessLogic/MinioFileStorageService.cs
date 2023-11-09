@@ -19,7 +19,12 @@ public class MinioFileStorageService: IFileStorageService
     public async Task UploadFileAsync(Stream fileStream, string filePath)
     {
         // Upload the file to the configured bucket.
-        var putObjectArgs = new PutObjectArgs().WithBucket(_bucketName).WithStreamData(fileStream).WithObject(filePath);
+        var putObjectArgs = new PutObjectArgs()
+            .WithBucket(_bucketName)
+            .WithStreamData(fileStream)
+            .WithObject(filePath)
+            .WithObjectSize(fileStream.Length);
+            
         await _minioClient.PutObjectAsync(putObjectArgs);
     }
 

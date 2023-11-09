@@ -11,14 +11,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
 using Org.OpenAPITools.Attributes;
 using Org.OpenAPITools.Models;
+using SWKOM_paperless.BusinessLogic.Interfaces;
 
 namespace Org.OpenAPITools.Controllers
 { 
@@ -173,19 +172,48 @@ namespace Org.OpenAPITools.Controllers
         /// <param name="tags"></param>
         /// <param name="correspondent"></param>
         /// <param name="document"></param>
+        /// <param name="fileStorageService"></param>
         /// <response code="200">Success</response>
         [HttpPost]
         [Route("/api/documents/post_document")]
         [Consumes("multipart/form-data")]
         [ValidateModelState]
         [SwaggerOperation("UploadDocument")]
-        public virtual IActionResult UploadDocument([FromForm (Name = "title")]string title, [FromForm (Name = "created")]DateTime? created, [FromForm (Name = "document_type")]int? documentType, [FromForm (Name = "tags")]List<int> tags, [FromForm (Name = "correspondent")]int? correspondent, [FromForm (Name = "document")]List<System.IO.Stream> document)
+        public virtual async Task<IActionResult> UploadDocument(
+            [FromForm(Name = "title")] string title,
+            [FromForm(Name = "created")] DateTime? created,
+            [FromForm(Name = "document_type")] int? documentType,
+            [FromForm(Name = "tags")] List<int> tags,
+            [FromForm(Name = "correspondent")] int? correspondent,
+            [FromForm(Name = "document")] List<IFormFile> document,
+            [FromServices] IFileStorageService fileStorageService)
         {
+            // check if file(s) were uploaded
+            if (document == null || document.Count == 0)
+            {
+                return StatusCode(400, "No file was uploaded.");
+            }
+            
+            // upload file(s)
+            foreach (var file in document)
+            {
+                // check if file is empty
+                if (file.Length == 0)
+                {
+                    return StatusCode(400, "File is empty.");
+                }
+                
+                // generate unique file name
+                var guid = Guid.NewGuid().ToString();
+                var fileName = $"{guid}_{file.FileName}";
+                
+                // upload file
+                await fileStorageService.UploadFileAsync(file.OpenReadStream(), fileName);
+                
+                // TODO: save file name to database
+            }
 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            return StatusCode(200);
         }
     }
 }
