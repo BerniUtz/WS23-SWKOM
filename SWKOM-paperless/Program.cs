@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using log4net;
 
 namespace Org.OpenAPITools
 {
@@ -8,12 +9,14 @@ namespace Org.OpenAPITools
     /// </summary>
     public class Program
     {
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(Program));
         /// <summary>
         /// Main
         /// </summary>
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+            _logger.Debug("Starting Program");
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -26,8 +29,7 @@ namespace Org.OpenAPITools
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                   webBuilder.UseStartup<Startup>()
-                             .UseUrls("http://0.0.0.0:8080/");
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }

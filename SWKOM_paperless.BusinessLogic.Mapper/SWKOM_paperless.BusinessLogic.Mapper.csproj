@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>11</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="12.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Entities\SWKOM-paperless.BusinessLogic.Entities.csproj" />
+      <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj" />
+      <ProjectReference Include="..\SWKOM-paperless\SWKOM-paperless.csproj" />
+    </ItemGroup>
+
+</Project>

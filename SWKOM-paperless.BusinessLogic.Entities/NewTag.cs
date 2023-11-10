@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace SWKOM_paperless.BusinessLogic.Entities
 {
-    internal class NewTag
+    public class NewTag
     { 
         public string Name { get; set; }
         public string Color { get; set; }

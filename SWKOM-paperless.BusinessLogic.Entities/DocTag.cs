@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWKOM_paperless.BusinessLogic.Entities
 {
-    internal class DocTag
+    public class DocTag
     {
         public long Id { get; set; }
         public string Slug { get; set; }

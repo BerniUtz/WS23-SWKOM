@@ -24,6 +24,14 @@ using Org.OpenAPITools.Authentication;
 using Org.OpenAPITools.Filters;
 using Org.OpenAPITools.OpenApi;
 using Org.OpenAPITools.Formatters;
+using SWKOM_paperless.BusinessLogic;
+using SWKOM_paperless.BusinessLogic.Interfaces;
+using SWKOM_paperless.DAL;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
+
 
 namespace Org.OpenAPITools
 {
@@ -52,6 +60,53 @@ namespace Org.OpenAPITools
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            // ignore CORS
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+            
+            // Add FileStorageService
+            services.AddSingleton<IFileStorageService, MinioFileStorageService>(sp =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var minioOptions = config.GetSection("MinIO").Get<MinIOOptions>();
+                return new MinioFileStorageService(
+                    minioOptions.Endpoint, 
+                    minioOptions.AccessKey, 
+                    minioOptions.SecretKey, 
+                    minioOptions.BucketName
+                    );
+            });
+            
+            // Add QueueService
+            services.AddSingleton<IQueueService, RabbitMQService>(sp =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var rabbitMQOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
+                return new RabbitMQService(
+                    rabbitMQOptions.Hostname,
+                    rabbitMQOptions.Username,
+                    rabbitMQOptions.Password,
+                    rabbitMQOptions.Port
+                );
+            });
+
+            //Add QueueInitializer to ensure the queue is up and runnign
+            services.AddSingleton<IHostedService, QueueInitializerService>();
+
+            
+            
+            // DB Context zum Service hinzufügen
+            // Connectionstring wird aus appsettings.json gelesen
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add framework services.
             services
@@ -74,8 +129,8 @@ namespace Org.OpenAPITools
                     
                     c.SwaggerDoc("1.0", new OpenApiInfo
                     {
-                        Title = "Mock Server",
-                        Description = "Mock Server (ASP.NET Core 6.0)",
+                        Title = "Paperless API Server",
+                        Description = "",
                         TermsOfService = new Uri("https://github.com/openapitools/openapi-generator"),
                         Contact = new OpenApiContact
                         {
@@ -97,8 +152,9 @@ namespace Org.OpenAPITools
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
                 });
-                services
-                    .AddSwaggerGenNewtonsoftSupport();
+            
+            services
+                .AddSwaggerGenNewtonsoftSupport();
         }
 
         /// <summary>
@@ -135,6 +191,7 @@ namespace Org.OpenAPITools
                     // c.SwaggerEndpoint("/openapi-original.json", "Mock Server Original");
                 });
             app.UseRouting();
+            app.UseCors();
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
