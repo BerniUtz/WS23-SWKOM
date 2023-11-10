@@ -94,6 +94,11 @@ namespace Org.OpenAPITools
                     rabbitMQOptions.Port
                 );
             });
+
+            //Add QueueInitializer to ensure the queue is up and runnign
+            services.AddSingleton<IHostedService, QueueInitializerService>();
+
+            
             
             // DB Context zum Service hinzufügen
             // Connectionstring wird aus appsettings.json gelesen

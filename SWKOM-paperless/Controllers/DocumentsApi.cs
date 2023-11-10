@@ -217,8 +217,9 @@ namespace Org.OpenAPITools.Controllers
                 };
                 
                 // enqueue message for  OCR
-                await queueService.EnsureQueueExistsAsync("ocr_queue"); // TODO: move to startup or any other global place so it is only called once
                 await queueService.EnqueueAsync("ocr_queue", message);
+
+
 
                 // TODO: save file name to database
             }
