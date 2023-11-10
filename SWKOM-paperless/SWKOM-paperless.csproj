@@ -29,6 +29,8 @@
   </ItemGroup>
   <ItemGroup><!--<DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.0" />-->
     <ProjectReference Include="..\SWKOM-paperless.DAL\SWKOM-paperless.DAL.csproj" />
+    <ProjectReference Include="..\SWKOM-paperless.BusinessLogic\SWKOM-paperless.BusinessLogic.csproj" />
+    <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net.config" />
