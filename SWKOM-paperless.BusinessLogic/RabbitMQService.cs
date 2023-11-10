@@ -17,6 +17,13 @@ namespace SWKOM_paperless.BusinessLogic
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
         }
+        
+        public RabbitMQService(IConnection connection, IModel channel, ConnectionFactory factory)
+        {
+            _connection = connection;
+            _channel = channel;
+            _factory = factory;
+        }
 
         public Task CreateQueueAsync(string queueName)
         {
