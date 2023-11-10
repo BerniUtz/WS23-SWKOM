@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace SWKOM_paperless.BusinessLogic.Entities
 {
-    internal class Document
+    public class Document
     {
       
         public int Id { get; set; }

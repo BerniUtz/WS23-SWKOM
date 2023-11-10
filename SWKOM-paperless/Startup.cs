@@ -24,6 +24,9 @@ using Org.OpenAPITools.Authentication;
 using Org.OpenAPITools.Filters;
 using Org.OpenAPITools.OpenApi;
 using Org.OpenAPITools.Formatters;
+using SWKOM_paperless.DAL;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
 
@@ -55,6 +58,17 @@ namespace Org.OpenAPITools
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            // ignore CORS
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             // Add framework services.
             services
@@ -77,8 +91,8 @@ namespace Org.OpenAPITools
                     
                     c.SwaggerDoc("1.0", new OpenApiInfo
                     {
-                        Title = "Mock Server",
-                        Description = "Mock Server (ASP.NET Core 6.0)",
+                        Title = "Paperless API Server",
+                        Description = "",
                         TermsOfService = new Uri("https://github.com/openapitools/openapi-generator"),
                         Contact = new OpenApiContact
                         {
@@ -102,6 +116,11 @@ namespace Org.OpenAPITools
                 });
                 services
                     .AddSwaggerGenNewtonsoftSupport();
+                
+                // DB Context zum Service hinzufügen
+                // Connectionstring wird aus appsettings.json gelesen
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         /// <summary>
@@ -138,6 +157,7 @@ namespace Org.OpenAPITools
                     // c.SwaggerEndpoint("/openapi-original.json", "Mock Server Original");
                 });
             app.UseRouting();
+            app.UseCors();
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
