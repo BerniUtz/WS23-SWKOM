@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
-        <RootNamespace>SWKOM_paperless.BusinessLogic.Interfaces</RootNamespace>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>SWKOM_paperless.Logger</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
