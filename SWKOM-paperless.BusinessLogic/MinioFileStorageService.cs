@@ -16,6 +16,12 @@ public class MinioFileStorageService: IFileStorageService
         _bucketName = bucketName;
     }
     
+    public MinioFileStorageService(IMinioClient minioClient, string bucketName)
+    {
+        _minioClient = minioClient;
+        _bucketName = bucketName;
+    }
+    
     public async Task UploadFileAsync(Stream fileStream, string filePath)
     {
         // Upload the file to the configured bucket.

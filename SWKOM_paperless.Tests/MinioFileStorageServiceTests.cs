@@ -17,10 +17,7 @@ public class MinioFileStorageServiceTests
     {
         _mockMinioClient = new Mock<IMinioClient>();
         _minioFileStorageService = new MinioFileStorageService("endpoint", "accessKey", "secretKey", BucketName);
-        // inject the mocked minio client
-        typeof(MinioFileStorageService)
-            .GetField("_minioClient", BindingFlags.NonPublic | BindingFlags.Instance)
-            ?.SetValue(_minioFileStorageService, _mockMinioClient.Object);
+        _minioFileStorageService = new MinioFileStorageService(_mockMinioClient.Object, BucketName);
     }
 
     private Mock<IMinioClient> _mockMinioClient = null!;

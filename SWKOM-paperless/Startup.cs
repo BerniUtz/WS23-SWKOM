@@ -85,6 +85,24 @@ namespace Org.OpenAPITools
                     );
             });
             
+            // Add QueueService
+            services.AddSingleton<IQueueService, RabbitMQService>(sp =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var rabbitMQOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
+                return new RabbitMQService(
+                    rabbitMQOptions.Hostname,
+                    rabbitMQOptions.Username,
+                    rabbitMQOptions.Password,
+                    rabbitMQOptions.Port
+                );
+            });
+
+            //Add QueueInitializer to ensure the queue is up and runnign
+            services.AddSingleton<IHostedService, QueueInitializerService>();
+
+            
+            
             // DB Context zum Service hinzufügen
             // Connectionstring wird aus appsettings.json gelesen
             services.AddDbContext<ApplicationDbContext>(options =>
