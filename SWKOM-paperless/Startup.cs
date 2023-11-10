@@ -28,6 +28,9 @@ using SWKOM_paperless.DAL;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
+
+
 namespace Org.OpenAPITools
 {
     /// <summary>
