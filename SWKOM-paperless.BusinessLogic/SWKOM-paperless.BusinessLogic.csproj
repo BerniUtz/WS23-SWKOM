@@ -16,5 +16,4 @@
       <PackageReference Include="Minio" Version="6.0.0" />
       <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
     </ItemGroup>
-
 </Project>

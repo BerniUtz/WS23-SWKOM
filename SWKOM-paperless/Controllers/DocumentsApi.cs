@@ -11,12 +11,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
 using Org.OpenAPITools.Attributes;
 using Org.OpenAPITools.Models;
+using SWKOM_paperless.BusinessLogic;
 using SWKOM_paperless.BusinessLogic.Interfaces;
 
 namespace Org.OpenAPITools.Controllers
@@ -171,8 +174,8 @@ namespace Org.OpenAPITools.Controllers
         /// <param name="documentType"></param>
         /// <param name="tags"></param>
         /// <param name="correspondent"></param>
-        /// <param name="document"></param>
-        /// <param name="fileStorageService"></param>
+        /// <param name="documents"></param>
+        /// <param name="documentsService"></param>
         /// <response code="200">Success</response>
         [HttpPost]
         [Route("/api/documents/post_document")]
@@ -185,45 +188,10 @@ namespace Org.OpenAPITools.Controllers
             [FromForm(Name = "document_type")] int? documentType,
             [FromForm(Name = "tags")] List<int> tags,
             [FromForm(Name = "correspondent")] int? correspondent,
-            [FromForm(Name = "document")] List<IFormFile> document,
-            [FromServices] IFileStorageService fileStorageService,
-            [FromServices] IQueueService queueService)
+            [FromForm(Name = "document")] List<IFormFile> documents,
+            [FromServices] IDocumentsService documentsService)
         {
-            // check if file(s) were uploaded
-            if (document == null || document.Count == 0)
-            {
-                return StatusCode(400, "No file was uploaded.");
-            }
-            
-            // upload file(s)
-            foreach (var file in document)
-            {
-                // check if file is empty
-                if (file.Length == 0)
-                {
-                    return StatusCode(400, "File is empty.");
-                }
-                
-                // generate unique file name
-                var guid = Guid.NewGuid().ToString();
-                var fileName = $"{guid}_{file.FileName}";
-                
-                // upload file
-                await fileStorageService.UploadFileAsync(file.OpenReadStream(), fileName);
-
-                var message = new
-                {
-                    FilePath = fileName,
-                };
-                
-                // enqueue message for  OCR
-                await queueService.EnqueueAsync("ocr_queue", message);
-
-
-
-                // TODO: save file name to database
-            }
-
+            await documentsService.HandleUpload(documents);
             return StatusCode(200);
         }
     }

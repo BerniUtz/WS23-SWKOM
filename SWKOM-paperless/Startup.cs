@@ -98,6 +98,13 @@ namespace Org.OpenAPITools
                 );
             });
 
+            services.AddSingleton<IDocumentsService, DocumentsService>(sp =>
+            {
+                var fileStorageService = sp.GetRequiredService<IFileStorageService>();
+                var queueService = sp.GetRequiredService<IQueueService>();
+                return new DocumentsService(fileStorageService, queueService);
+            });
+
             //Add QueueInitializer to ensure the queue is up and runnign
             services.AddSingleton<IHostedService, QueueInitializerService>();
 
