@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWKOM_paperless.ServiceAgents.Interfaces
 {
-    public interface IOCRWorker
+    public interface IOCRClient
     {
         string OcrPdf(Stream pdf);
     }

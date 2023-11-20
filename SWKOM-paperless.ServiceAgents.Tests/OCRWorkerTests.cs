@@ -5,11 +5,11 @@ namespace SWKOM_paperless.ServiceAgents.Tests
 {
     public class Tests
     {
-        private IOCRWorker worker;
+        private IOCRClient worker;
         [SetUp]
         public void Setup()
         {
-            worker = new OCRWorker();
+            worker = new OCRClient();
         }
 
         [Test]

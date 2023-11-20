@@ -10,11 +10,11 @@ using Tesseract;
 
 namespace SWKOM_paperless.ServiceAgents
 {
-    public class OCRWorker : IOCRWorker
+    public class OCRClient : IOCRClient
     {
         private readonly string language;
         private readonly string tessDataPath;
-        public OCRWorker(string lan = "eng")
+        public OCRClient(string lan = "eng")
         {
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             path = Path.Combine(path, "tessdata");
