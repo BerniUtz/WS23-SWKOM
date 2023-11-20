@@ -9,17 +9,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM-paperless.BusinessLog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM-paperless.BusinessLogic.Interfaces", "SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj", "{FE4E960B-2863-4D56-8808-773EF513998E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.BusinessLogic.EntityValidators", "SWKOM-paperless.BusinessLogic.EntityValidators\SWKOM-paperless.BusinessLogic.EntityValidators.csproj", "{163B5CB4-79B0-433F-BD66-74DFBA43F8B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM-paperless.BusinessLogic.EntityValidators", "SWKOM-paperless.BusinessLogic.EntityValidators\SWKOM-paperless.BusinessLogic.EntityValidators.csproj", "{163B5CB4-79B0-433F-BD66-74DFBA43F8B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM_paperless.BusinessLogic.Mapper", "SWKOM_paperless.BusinessLogic.Mapper\SWKOM_paperless.BusinessLogic.Mapper.csproj", "{38600DA5-7451-4959-9C65-819DFF3F1928}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM_paperless.BusinessLogic.Mapper", "SWKOM_paperless.BusinessLogic.Mapper\SWKOM_paperless.BusinessLogic.Mapper.csproj", "{38600DA5-7451-4959-9C65-819DFF3F1928}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM_paperless.Tests", "SWKOM_paperless.Tests\SWKOM_paperless.Tests.csproj", "{AE740FE8-9975-4AFF-9E7E-2D4E42E0F34F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM_paperless.Tests", "SWKOM_paperless.Tests\SWKOM_paperless.Tests.csproj", "{AE740FE8-9975-4AFF-9E7E-2D4E42E0F34F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.DAL", "SWKOM-paperless.DAL\SWKOM-paperless.DAL.csproj", "{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM-paperless.DAL", "SWKOM-paperless.DAL\SWKOM-paperless.DAL.csproj", "{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mock Server", "SWKOM-paperless.MockAPI\Mock Server.csproj", "{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mock Server", "SWKOM-paperless.MockAPI\Mock Server.csproj", "{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.BusinessLogic", "SWKOM-paperless.BusinessLogic\SWKOM-paperless.BusinessLogic.csproj", "{613E3394-E598-464A-81EA-DCDFE81FCBD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWKOM-paperless.BusinessLogic", "SWKOM-paperless.BusinessLogic\SWKOM-paperless.BusinessLogic.csproj", "{613E3394-E598-464A-81EA-DCDFE81FCBD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.ServiceAgents", "SWKOM-paperless.ServiceAgents\SWKOM-paperless.ServiceAgents.csproj", "{C9736395-63B0-4B80-B6F6-7F6C579731E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.ServiceAgents.Interfaces", "SWKOM-paperless.ServiceAgents.Interfaces\SWKOM-paperless.ServiceAgents.Interfaces.csproj", "{7F092955-9FB4-4ECA-B265-AA3978D2066B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWKOM-paperless.ServiceAgents.Tests", "SWKOM-paperless.ServiceAgents.Tests\SWKOM-paperless.ServiceAgents.Tests.csproj", "{F1D8B4E4-72BE-419C-9744-16B8872198DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,27 +45,10 @@ Global
 		{FE4E960B-2863-4D56-8808-773EF513998E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE4E960B-2863-4D56-8808-773EF513998E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE4E960B-2863-4D56-8808-773EF513998E}.Release|Any CPU.Build.0 = Release|Any CPU
-
 		{163B5CB4-79B0-433F-BD66-74DFBA43F8B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{163B5CB4-79B0-433F-BD66-74DFBA43F8B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{163B5CB4-79B0-433F-BD66-74DFBA43F8B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{163B5CB4-79B0-433F-BD66-74DFBA43F8B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5CCBE73-87AD-49CC-B8DF-26F80F4720FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38600DA5-7451-4959-9C65-819DFF3F1928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38600DA5-7451-4959-9C65-819DFF3F1928}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE740FE8-9975-4AFF-9E7E-2D4E42E0F34F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE740FE8-9975-4AFF-9E7E-2D4E42E0F34F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{613E3394-E598-464A-81EA-DCDFE81FCBD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{613E3394-E598-464A-81EA-DCDFE81FCBD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A38BF1A6-71DA-4565-A3A9-2DB6B4E12F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-
-		{48B197DF-F021-455F-B4F5-C1A28078D34C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48B197DF-F021-455F-B4F5-C1A28078D34C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38600DA5-7451-4959-9C65-819DFF3F1928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38600DA5-7451-4959-9C65-819DFF3F1928}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38600DA5-7451-4959-9C65-819DFF3F1928}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -80,5 +69,23 @@ Global
 		{613E3394-E598-464A-81EA-DCDFE81FCBD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{613E3394-E598-464A-81EA-DCDFE81FCBD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{613E3394-E598-464A-81EA-DCDFE81FCBD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9736395-63B0-4B80-B6F6-7F6C579731E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9736395-63B0-4B80-B6F6-7F6C579731E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9736395-63B0-4B80-B6F6-7F6C579731E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9736395-63B0-4B80-B6F6-7F6C579731E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F092955-9FB4-4ECA-B265-AA3978D2066B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F092955-9FB4-4ECA-B265-AA3978D2066B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F092955-9FB4-4ECA-B265-AA3978D2066B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F092955-9FB4-4ECA-B265-AA3978D2066B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1D8B4E4-72BE-419C-9744-16B8872198DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1D8B4E4-72BE-419C-9744-16B8872198DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1D8B4E4-72BE-419C-9744-16B8872198DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1D8B4E4-72BE-419C-9744-16B8872198DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {78E14996-435C-4023-8297-BF49BCB97AE9}
 	EndGlobalSection
 EndGlobal

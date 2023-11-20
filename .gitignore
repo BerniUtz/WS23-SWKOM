@@ -473,3 +473,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+# Tessdata for OCRWorker (Folder is ~ 380 MB)
+**/tessdata/
