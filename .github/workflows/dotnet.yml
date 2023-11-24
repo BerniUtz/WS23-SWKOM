@@ -15,11 +15,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Setup dependencies
+      run: |
+        sudo apt update
+        sudo apt install ghostscript libleptonica-dev=1.82.0-3build1 libtesseract-dev       
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

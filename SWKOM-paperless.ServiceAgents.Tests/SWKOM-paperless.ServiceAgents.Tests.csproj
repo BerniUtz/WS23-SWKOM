@@ -29,4 +29,14 @@
     </None>
   </ItemGroup>
 
+  <Target Name="link_deps" AfterTargets="Build">
+    <Exec
+            Command="ln -sf /opt/homebrew/Cellar/leptonica/1.83.1/lib/libleptonica.dylib $(OutDir)x64/libleptonica-1.82.0.dylib"
+            Condition="Exists('/opt/homebrew/Cellar/leptonica/1.83.1/lib/libleptonica.dylib')"
+    />
+    <Exec
+            Command="ln -sf /opt/homebrew/Cellar/tesseract/5.3.2_1/lib/libtesseract.dylib $(OutDir)x64/libtesseract50.dylib"
+            Condition="Exists('/opt/homebrew/Cellar/tesseract/5.3.2_1/lib/libtesseract.dylib')"
+    />
+  </Target>
 </Project>
