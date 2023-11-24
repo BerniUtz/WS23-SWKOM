@@ -38,5 +38,17 @@
             Command="ln -sf /opt/homebrew/Cellar/tesseract/5.3.2_1/lib/libtesseract.dylib $(OutDir)x64/libtesseract50.dylib"
             Condition="Exists('/opt/homebrew/Cellar/tesseract/5.3.2_1/lib/libtesseract.dylib')"
     />
+    <Exec
+            Command="ln -sf /usr/lib/x86_64-linux-gnu/libdl.so.2 $(OutDir)libdl.so"
+            Condition="Exists('/usr/lib/x86_64-linux-gnu/libdl.so.2')"
+    />
+    <Exec
+            Command="ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so $(OutDir)x64/libleptonica-1.82.0.so"
+            Condition="Exists('/usr/lib/x86_64-linux-gnu/libleptonica.so')"
+    />
+    <Exec
+            Command="ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so $(OutDir)x64/libtesseract50.so"
+            Condition="Exists('/usr/lib/x86_64-linux-gnu/libtesseract.so')"
+    />
   </Target>
 </Project>

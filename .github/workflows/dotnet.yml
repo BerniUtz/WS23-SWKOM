@@ -18,7 +18,7 @@ jobs:
     - name: Setup dependencies
       run: |
         sudo apt update
-        sudo apt install ghostscript libleptonica-dev=1.82.0-3build1 libtesseract-dev       
+        sudo apt install ghostscript libleptonica-dev libtesseract-dev       
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
