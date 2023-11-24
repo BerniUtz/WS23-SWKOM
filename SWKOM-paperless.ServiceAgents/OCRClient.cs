@@ -16,10 +16,12 @@ namespace SWKOM_paperless.ServiceAgents
         private readonly string tessDataPath;
         public OCRClient(string lan = "eng")
         {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (path == null)
+                throw new Exception("Failed to determine executing assembly location.");
+            
             path = Path.Combine(path, "tessdata");
             this.tessDataPath = path.Replace("file:\\", "");
-            Console.WriteLine(this.tessDataPath);
             this.language = lan;
         }
         public string OcrPdf(Stream pdf)

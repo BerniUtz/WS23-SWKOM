@@ -16,11 +16,13 @@ namespace SWKOM_paperless.OCRWorker
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("OCRWorkerSettings.json")
             .Build();
-
-
+            
             var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
             var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
             var queueName = config.GetSection("Queue").ToString();
+            
+            if(queueOptions == null || fileStorageOptions == null || queueName == null)
+                throw new Exception("Failed to read configuration file.");
 
             OCRService client = new OCRService(
                 new MinioFileStorageService(

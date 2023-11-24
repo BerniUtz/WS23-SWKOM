@@ -46,8 +46,15 @@ namespace SWKOM_paperless.OCRWorker
         {
             //reading from queue
             QueuePayload messageBody = await _queueService.DequeueAsync<QueuePayload>(_queue);
+            
+            // check if there is a message in the queue
+            if (messageBody == null)
+            {
+                // TODO: Rather than throwing an exception, the worker should wait for a message to be enqueued.
+                throw new Exception("No message in Queue");
+            }
 
-            //validating messageBody
+            // validating messageBody
             var validator = new QueuePayloadValidator();
             var validationResult = validator.Validate(messageBody);
             if (!validationResult.IsValid)
@@ -64,11 +71,5 @@ namespace SWKOM_paperless.OCRWorker
             return await _fileStorage.GetFileAsync(fileName);
 
         }
-
-
-
-
-
-
     }
 }
