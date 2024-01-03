@@ -54,7 +54,17 @@ services:
       /usr/bin/mc mb minio/paperless
       "
 
+  elasticsearch:
+    image: elasticsearch:8.11.3
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/var/lib/elasticsearch/data
+
 volumes:
   postgres_data:
   rabbitmq_data:
   minio_data:
+  elasticsearch_data:
