@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Entities\SWKOM-paperless.BusinessLogic.Entities.csproj" />
       <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj" />
     </ItemGroup>
 
@@ -17,5 +18,4 @@
       <PackageReference Include="NEST" Version="7.17.5" />
       <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
     </ItemGroup>
-
 </Project>
