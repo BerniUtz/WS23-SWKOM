@@ -9,6 +9,7 @@ namespace SWKOM_paperless.BusinessLogic.Interfaces
     {
         public Task AddDocumentAsync(Document document);
         public Task<List<Document>> SearchDocumentsAsync(string query, string indexName);
+        public Task DeleteDocumentAsync(int id);
 
     }
 }

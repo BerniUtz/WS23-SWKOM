@@ -73,5 +73,22 @@ public class ElasticSearchService : IElasticSearchLogic
 
         return new List<Document>();
     }
+    
+    public async Task DeleteDocumentAsync(int id)
+    {
+        var deleteResponse = await _elasticClient.DeleteAsync<Document>(id, idx => idx
+            .Index("documents")
+            .Refresh(Refresh.WaitFor)
+        );
+
+        if (!deleteResponse.IsValid)
+        {
+            _logger.Error($"Failed to delete document: {deleteResponse.DebugInformation}");
+        }
+        else
+        {
+            _logger.Info($"Document deleted: {deleteResponse.Id}");
+        }
+    }
 
 }
