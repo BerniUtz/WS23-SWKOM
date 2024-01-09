@@ -1,29 +1,25 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
-WORKDIR /app
-EXPOSE 80
-
+# Use the official Microsoft .NET Core SDK image as the base image
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ["SWKOM-paperless.OCRWorker.csproj", "SWKOM-paperless.OCRWorker/"]
 
-# adding other projectdependencies
-#COPY ["../SWKOM-paperless.BusinessLogic/SWKOM-paperless.BusinessLogic.csproj", "SWKOM-paperless.BusinessLogic/"]
-#COPY ["../SWKOM-paperless.BusinessLogic.EntityValidators/SWKOM-paperless.BusinessLogic.EntityValidators.csproj", "SWKOM-paperless.BusinessLogic.EntityValidators/"]
-#COPY ["../SWKOM-paperless.BusinessLogic.Entities/SWKOM-paperless.BusinessLogic.Entities.csproj", "SWKOM-paperless.BusinessLogic.Entities/"]
-#COPY ["../SWKOM-paperless.BusinessLogic.Interfaces/SWKOM-paperless.BusinessLogic.Interfaces.csproj", "SWKOM-paperless.BusinessLogic.Interfaces/"]
-#COPY ["../SWKOM-paperless.ServiceAgents/SWKOM-paperless.ServiceAgents.csproj", "SWKOM-paperless.ServiceAgents/"]
-COPY ["../SWKOM-paperless.ServiceAgents.Interfaces/SWKOM-paperless.ServiceAgents.Interfaces.csproj", "SWKOM-paperless.ServiceAgents.Interfaces/"]
-
-RUN dotnet restore "SWKOM-paperless.OCRWorker/SWKOM-paperless.OCRWorker.csproj"
-
-COPY . .
-WORKDIR "/src/SWKOM-paperless.OCRWorker"
-RUN dotnet build "SWKOM-paperless.OCRWorker.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "SWKOM-paperless.OCRWorker.csproj" -c Release -o /app/publish
-
-FROM base AS final
+# Set the working directory inside the container
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copy the main solution file and the specific project file you need to build
+COPY *.sln ./
+COPY SWKOM-paperless.OCRWorker/SWKOM-paperless.OCRWorker.csproj SWKOM-paperless.OCRWorker/
+
+# Restore the specific project you're building
+RUN dotnet restore SWKOM-paperless.OCRWorker/SWKOM-paperless.OCRWorker.csproj
+
+# Copy everything else and build the project
+# Note: You need to ensure that you're copying all the necessary files for your project to build
+COPY . ./
+RUN dotnet publish SWKOM-paperless.OCRWorker/SWKOM-paperless.OCRWorker.csproj -c Release -o out
+
+# Generate runtime image (asp.net core runtime)
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out .
+
+# Set the command to run your application
 ENTRYPOINT ["dotnet", "SWKOM-paperless.OCRWorker.dll"]
