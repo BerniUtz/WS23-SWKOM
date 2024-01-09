@@ -11,12 +11,12 @@ public class ElasticSearchService : IElasticSearchLogic
     private static readonly ILog _logger = LogManager.GetLogger(typeof(ElasticSearchService));
     private readonly IElasticClient _elasticClient;
     
-    public ElasticSearchService()
+    public ElasticSearchService(string endpoint, string username, string password, string indexName)
     {
-        var settings = new ConnectionSettings(new Uri("https://localhost:9200"))
+        var settings = new ConnectionSettings(new Uri(endpoint))
             .ServerCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true)
-            .DefaultIndex("documents")
-            .BasicAuthentication("elastic", "password"); // TODO: Move to config file
+            .DefaultIndex(indexName)
+            .BasicAuthentication(username, password);
         _elasticClient = new ElasticClient(settings);
     }
     public ElasticSearchService(IElasticClient elasticClient)
@@ -91,4 +91,12 @@ public class ElasticSearchService : IElasticSearchLogic
         }
     }
 
+}
+
+public class ElasticSearchOptions
+{
+    public string Endpoint { get; set; }
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string IndexName { get; set; }
 }
