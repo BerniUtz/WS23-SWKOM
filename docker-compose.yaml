@@ -61,6 +61,8 @@ services:
       - "9300:9300"
     volumes:
       - elasticsearch_data:/var/lib/elasticsearch/data
+    environment:
+      - ELASTIC_PASSWORD=password
 
 volumes:
   postgres_data:
