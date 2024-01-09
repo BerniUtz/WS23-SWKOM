@@ -20,8 +20,9 @@ namespace SWKOM_paperless.OCRWorker
             var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
             var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
             var queueName = config.GetSection("Queue").ToString();
+            var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
             
-            if(queueOptions == null || fileStorageOptions == null || queueName == null)
+            if(queueOptions == null || fileStorageOptions == null || queueName == null || elasticSearchOptions == null)
                 throw new Exception("Failed to read configuration file.");
 
             OCRService client = new OCRService(
@@ -38,7 +39,13 @@ namespace SWKOM_paperless.OCRWorker
                         queueOptions.Port
                     ),
                     queueName,
-                    new OCRClient()
+                    new OCRClient(),
+                    new ElasticSearchService(
+                        elasticSearchOptions.Endpoint,
+                        elasticSearchOptions.Username,
+                        elasticSearchOptions.Password,
+                        elasticSearchOptions.IndexName
+                    )
                 );
 
             client.startAsync();

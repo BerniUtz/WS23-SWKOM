@@ -16,15 +16,17 @@ namespace SWKOM_paperless.OCRWorker
     {
         private IFileStorageService _fileStorage;
         private IQueueService _queueService;
+        private IElasticSearchLogic _elasticSearchLogic;
         private IOCRClient _ocrWorker;
         private readonly string _queue;
         
-        public OCRService(IFileStorageService fileStorage, IQueueService queueService, string queue, IOCRClient ocrWorker)
+        public OCRService(IFileStorageService fileStorage, IQueueService queueService, string queue, IOCRClient ocrWorker, IElasticSearchLogic elasticSearchLogic)
         {
             _fileStorage = fileStorage;
             _queueService = queueService;
             _queue = queue;
             _ocrWorker = ocrWorker;
+            _elasticSearchLogic = elasticSearchLogic;
         }
 
         public async void startAsync()
