@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SWKOM_paperless.DAL;
 
 
 namespace SWKOM_paperless.OCRWorker
@@ -16,18 +15,16 @@ namespace SWKOM_paperless.OCRWorker
     public class OCRService
     {
         private IFileStorageService _fileStorage;
-        private DocumentRepository _documentRepository;
         private IQueueService _queueService;
         private IOCRClient _ocrWorker;
         private readonly string _queue;
         
-        public OCRService(IFileStorageService fileStorage, IQueueService queueService, string queue, IOCRClient ocrWorker, ApplicationDbContext dbContext)
+        public OCRService(IFileStorageService fileStorage, IQueueService queueService, string queue, IOCRClient ocrWorker)
         {
             _fileStorage = fileStorage;
             _queueService = queueService;
             _queue = queue;
             _ocrWorker = ocrWorker;
-            _documentRepository = new DocumentRepository(dbContext);
         }
 
         public async void startAsync()
@@ -42,11 +39,6 @@ namespace SWKOM_paperless.OCRWorker
             Console.Write($"{payload.Result.filename}: {_ocrWorker.OcrPdf(pdfStream)}");
 
             //TODO Save result in Database and ElasticSearch
-            _documentRepository.AddDocument(new Document()
-            {
-                Title = payload.Result.filename,
-                Content = payload.Result.bucket
-            });
         }
 
 
