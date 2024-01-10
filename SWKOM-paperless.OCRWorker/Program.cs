@@ -1,11 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SWKOM_paperless.BusinessLogic;
+using SWKOM_paperless.DAL;
 using SWKOM_paperless.ServiceAgents;
 
 
 namespace SWKOM_paperless.OCRWorker
 {
-    class Progamm
+    static class Program
     {
         static void Main()
         {
