@@ -1,0 +1,57 @@
+{
+	"info": {
+		"_postman_id": "5632d6b7-ade9-4812-8634-fdc97bdb6983",
+		"name": "paperless",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31055451"
+	},
+	"item": [
+		{
+			"name": "Upload Document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "document",
+							"type": "file",
+							"src": "./SWKOM-paperless.ServiceAgents.Tests/TEST.pdf"
+						},
+						{
+							"key": "title",
+							"value": "TEST_TITLE",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/documents/post_document",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"documents",
+						"post_document"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
