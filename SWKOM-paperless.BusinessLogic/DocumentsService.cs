@@ -28,7 +28,7 @@ public class DocumentsService : IDocumentsService
             var fileName = $"{guid}_{document.FileName}";
             
             await _fileStorageService.UploadFileAsync(document.OpenReadStream(), fileName);
-            // TODO: Add document to database
+            
             var newDocument = new Document()
             {
                 Title = fileName,
