@@ -44,8 +44,7 @@ namespace SWKOM_paperless.OCRWorker
                         queueOptions.Port
                     ),
                     queueName,
-                    new OCRClient(),
-                    new ApplicationDbContext(dbContextOptions)
+                    new OCRClient()
                 );
 
             client.startAsync();
