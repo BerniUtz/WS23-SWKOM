@@ -2,6 +2,7 @@
 using SWKOM_paperless.BusinessLogic;
 using SWKOM_paperless.ServiceAgents;
 
+
 namespace SWKOM_paperless.OCRWorker
 {
     class Progamm
@@ -21,6 +22,7 @@ namespace SWKOM_paperless.OCRWorker
             
             var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
             var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
+            var dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(config.GetConnectionString("DefaultConnection")).Options;
             var queueName = config.GetSection("Queue").ToString();
             
             if(queueOptions == null || fileStorageOptions == null || queueName == null)
@@ -40,7 +42,8 @@ namespace SWKOM_paperless.OCRWorker
                         queueOptions.Port
                     ),
                     queueName,
-                    new OCRClient()
+                    new OCRClient(),
+                    new ApplicationDbContext(dbContextOptions)
                 );
 
             client.startAsync();
