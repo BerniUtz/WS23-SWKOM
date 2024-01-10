@@ -37,15 +37,16 @@ namespace SWKOM_paperless.OCRWorker
             Console.WriteLine($"Queue {_queue} exists");
 
             var payload = readFromQueue();
-            Stream pdfStream = await getPDFFileStream(payload.Result.filename);
+            Stream pdfStream = await getPDFFileStream(payload.Result.Filename);
 
-            Console.Write($"{payload.Result.filename}: {_ocrWorker.OcrPdf(pdfStream)}");
+            Console.Write($"{payload.Result.Filename}: {_ocrWorker.OcrPdf(pdfStream)}");
 
             //TODO Save result in Database and ElasticSearch
             _documentRepository.AddDocument(new Document()
             {
-                Title = payload.Result.filename,
-                Content = payload.Result.bucket
+                Id = payload.Result.Id,
+                Title = payload.Result.Filename,
+                Content = pdfStream.ToString(),
             });
         }
 
