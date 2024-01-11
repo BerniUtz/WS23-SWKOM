@@ -12,10 +12,9 @@ namespace SWKOM_paperless.BusinessLogic.EntityValidators
     {
         public QueuePayloadValidator() 
         {
-            RuleFor(x => x.Id).NotEmpty().NotNull();
             RuleFor(x => x.Bucket).NotEmpty().NotNull();
             RuleFor(x => x.Filename).NotEmpty().NotNull();
-            //TODO create more validator rules (e.g. regex Filename, check for correct fileextensions,...)
+            //TODO create more validator rules (e.g. regex filename, check for correct fileextensions,...)
         }
     }
 }

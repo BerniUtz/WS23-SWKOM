@@ -20,9 +20,9 @@
     <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.EntityValidators\SWKOM-paperless.BusinessLogic.EntityValidators.csproj" />
     <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj" />
     <ProjectReference Include="..\SWKOM-paperless.BusinessLogic\SWKOM-paperless.BusinessLogic.csproj" />
-    <ProjectReference Include="..\SWKOM-paperless.DAL\SWKOM-paperless.DAL.csproj" />
     <ProjectReference Include="..\SWKOM-paperless.ServiceAgents.Interfaces\SWKOM-paperless.ServiceAgents.Interfaces.csproj" />
     <ProjectReference Include="..\SWKOM-paperless.ServiceAgents\SWKOM-paperless.ServiceAgents.csproj" />
+    <ProjectReference Include="..\SWKOM-paperless.DAL\SWKOM-paperless.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>
