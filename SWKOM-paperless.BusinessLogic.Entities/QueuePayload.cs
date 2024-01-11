@@ -8,7 +8,7 @@ namespace SWKOM_paperless.BusinessLogic.Entities
 {
     public class QueuePayload
     {
-        public int Id { get; set; }
+        public int Id {get; set; }
         public string Bucket { get; set; }
         public string Filename { get; set; }
 
