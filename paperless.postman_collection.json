@@ -63,7 +63,7 @@
 						{
 							"key": "document",
 							"type": "file",
-							"src": "/Users/leonardstruck/Coding/WS23-SWKOM/SWKOM-paperless.ServiceAgents.Tests/TEST.pdf"
+							"src": "SWKOM-paperless.ServiceAgents.Tests/TEST.pdf"
 						},
 						{
 							"key": "title",
