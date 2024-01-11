@@ -14,8 +14,6 @@ services:
       POSTGRES_DB: paperless
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -27,21 +25,6 @@ services:
       - "5672:5672" # AMQP protocol
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 10s
-      timeout: 5s
-      retries: 3
-        
-  ocr_worker:
-    build:
-      dockerfile: ./SWKOM-paperless.OCRWorker/Dockerfile
-      context: .
-    depends_on:
-      - rabbitmq
-      - minio
-    environment:
-      - ENVIRONMENT=docker
   
   minio:
     image: minio/minio
@@ -55,9 +38,9 @@ services:
       MINIO_ROOT_PASSWORD: minio123
     command: server /data --console-address ":9001"
     healthcheck:
-      test: timeout 5s bash -c ':> /dev/tcp/127.0.0.1/9000' || exit 1
-      interval: 10s
-      timeout: 5s
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
       retries: 3
   
   minio-setup-s3-bucket:
