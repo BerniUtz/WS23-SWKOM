@@ -13,9 +13,42 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"const baseUrl = pm.variables.get(\"baseURL\");",
+							"",
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
-							"});"
+							"});",
+							"",
+							"pm.test(\"Document is uploaded (more documents are stored compared to pre-request fetch)\", function () {",
+							"    pm.sendRequest(`${baseUrl}/api/documents`, function (err, response) {",
+							"        const data = response.json();",
+							"        const countBefore = pm.collectionVariables.get(\"document_count\");",
+							"        pm.expect(countBefore < data.count, \"Count did not increase\")",
+							"        ",
+							"    })",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const baseURL = pm.variables.get(\"baseURL\");",
+							"",
+							"// this stores the current count of documents inside a variable,",
+							"// so we can test if another document was successfully stored inside the",
+							"// database.",
+							"",
+							"pm.sendRequest(`${baseURL}/api/documents`, function (err, response) {",
+							"    const data = response.json();",
+							"",
+							"    // store count in variable",
+							"    pm.collectionVariables.set(\"document_count\", data.count);",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -30,7 +63,7 @@
 						{
 							"key": "document",
 							"type": "file",
-							"src": "./SWKOM-paperless.ServiceAgents.Tests/TEST.pdf"
+							"src": "/Users/leonardstruck/Coding/WS23-SWKOM/SWKOM-paperless.ServiceAgents.Tests/TEST.pdf"
 						},
 						{
 							"key": "title",
@@ -52,6 +85,12 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "document_count",
+			"value": ""
 		}
 	]
 }
