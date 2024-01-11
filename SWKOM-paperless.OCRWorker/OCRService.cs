@@ -44,13 +44,14 @@ namespace SWKOM_paperless.OCRWorker
 
             Console.Write($"{payload.Result.Filename}: {_ocrWorker.OcrPdf(pdfStream)}");
 
-            //TODO Save result in Database and ElasticSearch
-            _documentRepository.AddDocument(new Document()
+            var newDocument = new Document()
             {
                 Id = payload.Result.Id,
                 Title = payload.Result.Filename,
                 Content = pdfStream.ToString(),
-            });
+            };
+            _documentRepository.AddDocument(newDocument);
+            _elasticSearchLogic.AddDocumentAsync(newDocument).Wait();
         }
 
 
