@@ -43,6 +43,11 @@ public class DocumentsService : IDocumentsService
             
         }
     }
+
+    public Task<List<Document>> GetDocuments()
+    {
+        return Task.FromResult(_documentRepository.GetAllDocuments()?.ToList() ?? new List<Document>());
+    }
 }
 
 public class DocumentsServiceNoDocumentsException : ArgumentNullException
