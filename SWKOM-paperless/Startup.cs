@@ -84,15 +84,6 @@ namespace Org.OpenAPITools
                     minioOptions.BucketName
                     );
             });
-            
-            var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
-            var settingsFile = environment == "docker" ? "OCRWorkerSettings.docker.json" : "OCRWorkerSettings.json";
-            
-            IConfiguration config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
-                .Build();
-            var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
  
             // DB Context zum Service hinzufügen
             // Connectionstring wird aus appsettings.json gelesen
@@ -118,12 +109,15 @@ namespace Org.OpenAPITools
             
             services.AddTransient<DocumentRepository>();
             services.AddTransient<IDocumentsService, DocumentsService>();
-
+            
             services.AddSingleton<IDocumentsService, DocumentsService>(sp =>
             {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
+    
                 var fileStorageService = sp.GetRequiredService<IFileStorageService>();
                 var queueService = sp.GetRequiredService<IQueueService>();
-                var documentRepository = sp.GetRequiredService<IDocumentRepository>();
+                var documentRepository = sp.GetRequiredService<DocumentRepository>();
                 var elasticSearchService = new ElasticSearchService(
                     elasticSearchOptions.Endpoint,
                     elasticSearchOptions.Username,
