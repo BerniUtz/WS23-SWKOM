@@ -85,6 +85,14 @@ namespace Org.OpenAPITools
                     );
             });
             
+            var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
+            var settingsFile = environment == "docker" ? "OCRWorkerSettings.docker.json" : "OCRWorkerSettings.json";
+            
+            IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
+                .Build();
+            var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
             // DB Context zum Service hinzufügen
             // Connectionstring wird aus appsettings.json gelesen
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -108,7 +116,13 @@ namespace Org.OpenAPITools
                 var fileStorageService = sp.GetRequiredService<IFileStorageService>();
                 var queueService = sp.GetRequiredService<IQueueService>();
                 var dbContext = sp.GetRequiredService<ApplicationDbContext>();
-                return new DocumentsService(fileStorageService, queueService, dbContext);
+                var elasticSearchService = new ElasticSearchService(
+                    elasticSearchOptions.Endpoint,
+                    elasticSearchOptions.Username,
+                    elasticSearchOptions.Password,
+                    elasticSearchOptions.IndexName
+                );
+                return new DocumentsService(fileStorageService, queueService, dbContext, elasticSearchService);
             });
 
             //Add QueueInitializer to ensure the queue is up and runnign

@@ -8,14 +8,16 @@ namespace SWKOM_paperless.BusinessLogic;
 public class DocumentsService : IDocumentsService
 {
     private readonly IFileStorageService _fileStorageService;
+    private readonly IElasticSearchLogic _elasticSearchLogic;
     private readonly DocumentRepository _documentRepository;
     private readonly IQueueService _queueService;
 
-    public DocumentsService(IFileStorageService fileStorageService, IQueueService queueService, ApplicationDbContext dbContext)
+    public DocumentsService(IFileStorageService fileStorageService, IQueueService queueService, ApplicationDbContext dbContext, IElasticSearchLogic elasticSearchLogic)
     {
         _fileStorageService = fileStorageService;
         _documentRepository = new DocumentRepository(dbContext);
         _queueService = queueService;
+        _elasticSearchLogic = elasticSearchLogic;
     }
 
     public async Task HandleUpload(List<IFormFile> documents)
@@ -36,6 +38,7 @@ public class DocumentsService : IDocumentsService
             };
             
             _documentRepository.AddDocument(newDocument);
+            _elasticSearchLogic.AddDocumentAsync(newDocument).Wait();
 
             var message = new QueuePayload(newDocument.Id, "BUCKET_PLACEHOLDER", fileName);
             await _queueService.EnqueueAsync("ocr_queue", message);
