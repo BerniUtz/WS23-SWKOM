@@ -20,6 +20,8 @@ namespace SWKOM_paperless.OCRWorker
         private IQueueService _queueService;
         private IOCRClient _ocrWorker;
         private readonly string _queue;
+
+        private readonly ManualResetEvent _exitEvent = new ManualResetEvent(false);
         
         public OCRService(IFileStorageService fileStorage, IQueueService queueService, string queue, IOCRClient ocrWorker, ApplicationDbContext dbContext)
         {
@@ -30,48 +32,15 @@ namespace SWKOM_paperless.OCRWorker
             _documentRepository = new DocumentRepository(dbContext);
         }
 
-        public async void startAsync()
+        public async Task startAsync()
         {
-            //TODO create subscription functionality in IQueueService
+            Console.WriteLine("Subscribe to queue");
             await _queueService.EnsureQueueExistsAsync(_queue);
             Console.WriteLine($"Queue {_queue} exists");
 
-            var payload = readFromQueue();
-            Stream pdfStream = await getPDFFileStream(payload.Result.Filename);
-
-            Console.Write($"{payload.Result.Filename}: {_ocrWorker.OcrPdf(pdfStream)}");
-
-            //TODO Save result in Database and ElasticSearch
-            _documentRepository.AddDocument(new Document()
-            {
-                Id = payload.Result.Id,
-                Title = payload.Result.Filename,
-                Content = pdfStream.ToString(),
-            });
-        }
-
-
-        private async Task<QueuePayload> readFromQueue()
-        {
-            //reading from queue
-            QueuePayload messageBody = await _queueService.DequeueAsync<QueuePayload>(_queue);
+            _queueService.Subscribe<QueuePayload>(_queue, HandleMessage);
             
-            // check if there is a message in the queue
-            if (messageBody == null)
-            {
-                // TODO: Rather than throwing an exception, the worker should wait for a message to be enqueued.
-                throw new Exception("No message in Queue");
-            }
-
-            // validating messageBody
-            var validator = new QueuePayloadValidator();
-            var validationResult = validator.Validate(messageBody);
-            if (!validationResult.IsValid)
-            {
-                throw new Exception("Invalid Messagebody");
-            }
-
-            return messageBody;
+            _exitEvent.WaitOne();
         }
 
         private async Task<Stream> getPDFFileStream(string fileName)
@@ -79,6 +48,37 @@ namespace SWKOM_paperless.OCRWorker
             //getFile from Minio
             return await _fileStorage.GetFileAsync(fileName);
 
+        }
+
+        private async void HandleMessage(QueuePayload message)
+        {
+            Console.WriteLine("Handle message");
+            var validator = new QueuePayloadValidator();
+            var validationResult = validator.Validate(message);
+            if (!validationResult.IsValid)
+            {
+                throw new Exception("Invalid Messagebody");
+            }
+
+            Console.Write($"retrieved payload {message.filename}");
+
+            Stream pdfStream = await getPDFFileStream(message.filename);
+
+            string pdfContent = _ocrWorker.OcrPdf(pdfStream);
+          
+            _documentRepository.AddDocument(new Document()
+            {
+                Id = payload.Result.Id,
+                Title = payload.Result.Filename,
+                Content = pdfContent,
+            });
+
+        }
+
+
+        public void Stop()
+        {
+            _exitEvent.Set();
         }
     }
 }
