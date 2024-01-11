@@ -76,7 +76,7 @@ namespace SWKOM_paperless.OCRWorker
                     Content = pdfContent,
                 };
 
-                 _documentRepository.AddDocument(newDocument);
+                 _documentRepository.UpdateDocument(newDocument);
                  _elasticSearchLogic.AddDocumentAsync(newDocument).Wait();
             }
             catch(Exception e)
