@@ -80,6 +80,8 @@ services:
       - elasticsearch_data:/var/lib/elasticsearch/data
     environment:
       - ELASTIC_PASSWORD=password
+      - discovery.type=single-node
+      - xpack.security.enabled=false
 
 volumes:
   postgres_data:
