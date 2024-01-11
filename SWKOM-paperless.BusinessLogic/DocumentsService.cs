@@ -12,10 +12,10 @@ public class DocumentsService : IDocumentsService
     private readonly DocumentRepository _documentRepository;
     private readonly IQueueService _queueService;
 
-    public DocumentsService(IFileStorageService fileStorageService, IQueueService queueService, ApplicationDbContext dbContext, IElasticSearchLogic elasticSearchLogic)
+    public DocumentsService(IFileStorageService fileStorageService, IQueueService queueService, DocumentRepository documentRepository, IElasticSearchLogic elasticSearchLogic)
     {
         _fileStorageService = fileStorageService;
-        _documentRepository = new DocumentRepository(dbContext);
+        _documentRepository = documentRepository;
         _queueService = queueService;
         _elasticSearchLogic = elasticSearchLogic;
     }

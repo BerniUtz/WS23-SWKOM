@@ -93,10 +93,15 @@ namespace Org.OpenAPITools
                 .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
                 .Build();
             var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
+ 
             // DB Context zum Service hinzufügen
             // Connectionstring wird aus appsettings.json gelesen
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly("SWKOM-paperless")
+                    )
+                );
             
             // Add QueueService
             services.AddSingleton<IQueueService, RabbitMQService>(sp =>
@@ -110,30 +115,26 @@ namespace Org.OpenAPITools
                     rabbitMQOptions.Port
                 );
             });
+            
+            services.AddTransient<DocumentRepository>();
+            services.AddTransient<IDocumentsService, DocumentsService>();
 
-             services.AddSingleton<IDocumentsService, DocumentsService>(sp =>
+            services.AddSingleton<IDocumentsService, DocumentsService>(sp =>
             {
                 var fileStorageService = sp.GetRequiredService<IFileStorageService>();
                 var queueService = sp.GetRequiredService<IQueueService>();
-                var dbContext = sp.GetRequiredService<ApplicationDbContext>();
+                var documentRepository = sp.GetRequiredService<IDocumentRepository>();
                 var elasticSearchService = new ElasticSearchService(
                     elasticSearchOptions.Endpoint,
                     elasticSearchOptions.Username,
                     elasticSearchOptions.Password,
                     elasticSearchOptions.IndexName
                 );
-                return new DocumentsService(fileStorageService, queueService, dbContext, elasticSearchService);
+                return new DocumentsService(fileStorageService, queueService, documentRepository, elasticSearchService);
             });
 
             //Add QueueInitializer to ensure the queue is up and runnign
             services.AddSingleton<IHostedService, QueueInitializerService>();
-
-            
-            
-            // DB Context zum Service hinzufügen
-            // Connectionstring wird aus appsettings.json gelesen
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add framework services.
             services
@@ -189,7 +190,7 @@ namespace Org.OpenAPITools
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -199,6 +200,9 @@ namespace Org.OpenAPITools
             {
                 app.UseHsts();
             }
+            
+            // The application should apply pending migrations automatically at startup.
+            context.Database.Migrate();
 
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
