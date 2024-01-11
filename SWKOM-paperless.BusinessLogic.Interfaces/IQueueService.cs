@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace SWKOM_paperless.BusinessLogic.Interfaces
@@ -55,5 +56,14 @@ namespace SWKOM_paperless.BusinessLogic.Interfaces
         /// <param name="queueName">The name of the queue to ensure.</param>
         /// <returns>A task that represents the asynchronous queue creation operation if the queue did not exist.</returns>
         Task EnsureQueueExistsAsync(string queueName);
+
+        /// <summary>
+        ///     Allows to subscribe to a queue.
+        /// </summary>
+        /// <param name="queueName">The name of the queue to subscribe to.</param
+        /// <param name="messageHandler"> the function that should be executed when a message is read from the queue.</param
+        /// <returns> Void. As the queuepayload is transfered into the Handler function. </returns>
+        void Subscribe<T>(string queueName, Action<T> messageHandler) where T: class;
+
     }
 }
