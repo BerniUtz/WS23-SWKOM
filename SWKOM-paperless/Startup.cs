@@ -107,25 +107,19 @@ namespace Org.OpenAPITools
                 );
             });
             
-            services.AddScoped<IElasticSearchLogic, ElasticSearchService>();
-            services.AddScoped<IDocumentsService, DocumentsService>();
-
-            services.AddSingleton<IDocumentsService, DocumentsService>(sp =>
+            services.AddTransient<DocumentRepository>();
+            services.AddTransient<IDocumentsService, DocumentsService>();
+            
+            services.AddSingleton<IElasticSearchLogic, ElasticSearchService>(sp =>
             {
                 var config = sp.GetRequiredService<IConfiguration>();
                 var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
-
-                var fileStorageService = sp.GetRequiredService<IFileStorageService>();
-                var queueService = sp.GetRequiredService<IQueueService>();
-                var documentRepository = sp.GetRequiredService<DocumentRepository>();
-                var elasticSearchService = new ElasticSearchService(
+                return new ElasticSearchService(
                     elasticSearchOptions.Endpoint,
                     elasticSearchOptions.Username,
                     elasticSearchOptions.Password,
                     elasticSearchOptions.IndexName
                 );
-
-                return new DocumentsService(fileStorageService, queueService, documentRepository, elasticSearchService);
             });
 
 
