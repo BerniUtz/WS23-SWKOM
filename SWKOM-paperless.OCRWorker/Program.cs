@@ -10,8 +10,16 @@ namespace SWKOM_paperless.OCRWorker
 {
     class Progamm
     {
-        static async Task Main()
+        static void Main()
         {
+            // check if the Environment Variable ENVIRONMENT is set to docker
+            // if so, use the OCRWorkerSettings.docker.json file
+            // otherwise use the OCRWorkerSettings.json file
+            var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
+            var settingsFile = environment == "docker" ? "OCRWorkerSettings.docker.json" : "OCRWorkerSettings.json";
+            
+          
+
             int maxAttempts = 3;
             int currentAttempt = 0;
 
@@ -20,11 +28,12 @@ namespace SWKOM_paperless.OCRWorker
                 Console.WriteLine("OCRWorker starts");
                 IConfiguration config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("OCRWorkerSettings.json")
+                .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
                 .Build();
                 
                 var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
                 var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
+                var dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(config.GetConnectionString("DefaultConnection")).Options;
                 var queueName = config["Queue"];
                 
                 if(queueOptions == null || fileStorageOptions == null || queueName == null)
@@ -45,11 +54,12 @@ namespace SWKOM_paperless.OCRWorker
                                 queueOptions.Port
                             ),
                             queueName,
-                            new OCRClient()
+                            new OCRClient(),
+                            new ApplicationDbContext(dbContextOptions)
                         );
                     Console.WriteLine("OCRService starts");
                     await client.startAsync();
-                    Console.WriteLine("Press Ctrl+C to stop the service.");
+                    
                     Console.CancelKeyPress += (sender, eventArgs) =>
                     {
                         client.Stop();
@@ -59,7 +69,7 @@ namespace SWKOM_paperless.OCRWorker
                     // Keep the application running
                     while (true)
                     {
-                        await Task.Delay(1000); // Add a small delay to avoid excessive CPU usage
+                        await Task.Delay(1000); 
                     }
                 }
                 catch(Exception e)
@@ -73,7 +83,7 @@ namespace SWKOM_paperless.OCRWorker
                 }
             }
             Console.WriteLine($"OCRService could not be started after {maxAttempts} attempts. Exiting...");
-       }
+        }
     }
 }
 

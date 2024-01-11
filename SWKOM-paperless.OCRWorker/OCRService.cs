@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SWKOM_paperless.DAL;
 
 
 namespace SWKOM_paperless.OCRWorker
@@ -18,35 +19,37 @@ namespace SWKOM_paperless.OCRWorker
         private IQueueService _queueService;
         private IOCRClient _ocrWorker;
         private readonly string _queue;
-
+        private ApplicationDbContext _documentRepository;
+      
         private readonly ManualResetEvent _exitEvent = new ManualResetEvent(false);
-        
-        public OCRService(IFileStorageService fileStorage, IQueueService queueService, string queue, IOCRClient ocrWorker)
+      
+        public OCRService(IFileStorageService fileStorage, IQueueService queueService, string queue, IOCRClient ocrWorker, ApplicationDbContext dbContext)
         {
             _fileStorage = fileStorage;
             _queueService = queueService;
             _queue = queue;
             _ocrWorker = ocrWorker;
+            _documentRepository = new DocumentRepository(dbContext);
         }
 
-        public async Task startAsync()
+        public async void startAsync()
         {
-            Console.WriteLine("Subscribe to queue");
-            await _queueService.EnsureQueueExistsAsync(_queue);
-            Console.WriteLine($"Queue {_queue} exists");
+           Console.WriteLine("Subscribe to queue");
+           await _queueService.EnsureQueueExistsAsync(_queue);
+           Console.WriteLine($"Queue {_queue} exists");
 
-            _queueService.Subscribe<QueuePayload>(_queue, HandleMessage);
-            
-            _exitEvent.WaitOne();
+           _queueService.Subscribe<QueuePayload>(_queue, HandleMessage);
+           
+           _exitEvent.WaitOne();
         }
-
+      
         private async Task<Stream> getPDFFileStream(string fileName)
         {
             //getFile from Minio
             return await _fileStorage.GetFileAsync(fileName);
 
         }
-
+      
         private async void HandleMessage(QueuePayload message)
         {
             Console.WriteLine("Handle message");
@@ -58,14 +61,17 @@ namespace SWKOM_paperless.OCRWorker
             }
 
             Console.Write($"retrieved payload {message.Filename}");
-
             Stream pdfStream = await getPDFFileStream(message.Filename);
-
             string pdfContent = _ocrWorker.OcrPdf(pdfStream);
-
+            
+             _documentRepository.AddDocument(new Document()
+            {
+                Id = payload.Result.Id,
+                Title = payload.Result.Filename,
+                Content = pdfContent,
+            });
         }
-
-
+      
         public void Stop()
         {
             _exitEvent.Set();
