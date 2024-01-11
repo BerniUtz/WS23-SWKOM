@@ -11,5 +11,14 @@
 	  "Username": "rabbitmq", // Use your RabbitMQ username here
 	  "Password": "rabbitmq", // Use your RabbitMQ password here
 	},
-	"Queue": "ocr_queue"
+	"Queue": "ocr_queue",
+	"ElasticSearch": {
+		"Endpoint": "http://elasticsearch:9200",
+		"AccessKey": "elastic",
+		"SecretKey": "password",
+		"BucketName": "documents"
+	},
+	"ConnectionStrings": {
+		"DefaultConnection": "Host=postgres;Port=5432;Database=paperless;Username=postgres;Password=postgres;"
+	}
 }

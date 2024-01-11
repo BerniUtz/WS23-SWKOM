@@ -42,7 +42,7 @@ namespace SWKOM_paperless.OCRWorker
                     var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
                     var queueName = config["Queue"];
                     
-                    if(queueOptions == null || fileStorageOptions == null || queueName == null)
+                    if(queueOptions == null || fileStorageOptions == null || queueName == null || dbContextOptions == null || elasticSearchOptions == null)
                         throw new Exception("Failed to read configuration file.");
                 
                     OCRService client = new OCRService(
