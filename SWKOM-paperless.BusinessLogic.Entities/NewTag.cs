@@ -10,6 +10,7 @@ namespace SWKOM_paperless.BusinessLogic.Entities
 {
     public class NewTag
     { 
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Color { get; set; }
         public string Match { get; set; }
