@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SWKOM_paperless.BusinessLogic;
 using SWKOM_paperless.DAL;
@@ -44,7 +44,8 @@ namespace SWKOM_paperless.OCRWorker
                         queueOptions.Port
                     ),
                     queueName,
-                    new OCRClient()
+                    new OCRClient(),
+                    new ApplicationDbContext(dbContextOptions)
                 );
 
             client.startAsync();
