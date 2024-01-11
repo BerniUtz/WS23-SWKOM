@@ -9,16 +9,14 @@ namespace SWKOM_paperless.OCRWorker
 {
     static class Program
     {
-        static async Task Main()
+        static void Main()
         {
-            Console.WriteLine("OCRWorker starts");
-
             // check if the Environment Variable ENVIRONMENT is set to docker
             // if so, use the OCRWorkerSettings.docker.json file
             // otherwise use the OCRWorkerSettings.json file
             var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
             var settingsFile = environment == "docker" ? "OCRWorkerSettings.docker.json" : "OCRWorkerSettings.json";
-
+            
             IConfiguration config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
@@ -26,10 +24,8 @@ namespace SWKOM_paperless.OCRWorker
             
             var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
             var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
-            var queueName = config["Queue"];
             var dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(config.GetConnectionString("DefaultConnection")).Options;
-            
-
+            var queueName = config.GetSection("Queue").ToString();
             
             if(queueOptions == null || fileStorageOptions == null || queueName == null)
                 throw new Exception("Failed to read configuration file.");
@@ -51,23 +47,10 @@ namespace SWKOM_paperless.OCRWorker
                     new OCRClient(),
                     new ApplicationDbContext(dbContextOptions)
                 );
-            Console.WriteLine("OCRService starts");
-            await client.startAsync();
 
-            Console.WriteLine("Press Ctrl+C to stop the service.");
-            Console.CancelKeyPress += (sender, eventArgs) =>
-            {
-                client.Stop();
-                eventArgs.Cancel = true; // Prevent the application from exiting immediately
-            };
-
-            // Keep the application running
-            while (true)
-            {
-                await Task.Delay(1000); // Add a small delay to avoid excessive CPU usage
-            }
-                }
-            }
+            client.startAsync();
+        }
+    }
 }
 
 
