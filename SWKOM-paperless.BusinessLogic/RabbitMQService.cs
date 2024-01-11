@@ -108,8 +108,11 @@ namespace SWKOM_paperless.BusinessLogic
                 {
                     messageHandler(message);
                 }
-                _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+                
             };
+            
+            // Start consuming messages from the queue
+            _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
         }
 
         public void Dispose()

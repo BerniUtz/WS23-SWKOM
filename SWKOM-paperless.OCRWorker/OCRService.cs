@@ -18,6 +18,8 @@ namespace SWKOM_paperless.OCRWorker
         private IQueueService _queueService;
         private IOCRClient _ocrWorker;
         private readonly string _queue;
+
+        private readonly ManualResetEvent _exitEvent = new ManualResetEvent(false);
         
         public OCRService(IFileStorageService fileStorage, IQueueService queueService, string queue, IOCRClient ocrWorker)
         {
@@ -27,15 +29,15 @@ namespace SWKOM_paperless.OCRWorker
             _ocrWorker = ocrWorker;
         }
 
-        public async void startAsync()
+        public async Task startAsync()
         {
-            //TODO create subscription functionality in IQueueService
+            Console.WriteLine("Subscribe to queue");
             await _queueService.EnsureQueueExistsAsync(_queue);
             Console.WriteLine($"Queue {_queue} exists");
 
             _queueService.Subscribe<QueuePayload>(_queue, HandleMessage);
             
-            //TODO Save result in Database and ElasticSearch
+            _exitEvent.WaitOne();
         }
 
         private async Task<Stream> getPDFFileStream(string fileName)
@@ -47,6 +49,7 @@ namespace SWKOM_paperless.OCRWorker
 
         private async void HandleMessage(QueuePayload message)
         {
+            Console.WriteLine("Handle message");
             var validator = new QueuePayloadValidator();
             var validationResult = validator.Validate(message);
             if (!validationResult.IsValid)
@@ -54,7 +57,18 @@ namespace SWKOM_paperless.OCRWorker
                 throw new Exception("Invalid Messagebody");
             }
 
+            Console.Write($"retrieved payload {message.filename}");
+
             Stream pdfStream = await getPDFFileStream(message.filename);
+
+            string pdfContent = _ocrWorker.OcrPdf(pdfStream);
+
+        }
+
+
+        public void Stop()
+        {
+            _exitEvent.Set();
         }
     }
 }

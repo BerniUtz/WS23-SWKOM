@@ -10,8 +10,9 @@ namespace SWKOM_paperless.OCRWorker
 {
     class Progamm
     {
-        static void Main()
+        static async Task Main()
         {
+            Console.WriteLine("OCRWorker starts");
             IConfiguration config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("OCRWorkerSettings.json")
@@ -19,7 +20,7 @@ namespace SWKOM_paperless.OCRWorker
             
             var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
             var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
-            var queueName = config.GetSection("Queue").ToString();
+            var queueName = config["Queue"];
             
             if(queueOptions == null || fileStorageOptions == null || queueName == null)
                 throw new Exception("Failed to read configuration file.");
@@ -40,10 +41,23 @@ namespace SWKOM_paperless.OCRWorker
                     queueName,
                     new OCRClient()
                 );
+            Console.WriteLine("OCRService starts");
+            await client.startAsync();
 
-            client.startAsync();
-        }
-    }
+            Console.WriteLine("Press Ctrl+C to stop the service.");
+            Console.CancelKeyPress += (sender, eventArgs) =>
+            {
+                client.Stop();
+                eventArgs.Cancel = true; // Prevent the application from exiting immediately
+            };
+
+            // Keep the application running
+            while (true)
+            {
+                await Task.Delay(1000); // Add a small delay to avoid excessive CPU usage
+            }
+                }
+            }
 }
 
 
