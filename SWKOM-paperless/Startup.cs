@@ -103,16 +103,8 @@ namespace Org.OpenAPITools
                 );
             });
             
-            services.AddScoped<DocumentRepository>();
-            services.AddScoped<IDocumentsService, DocumentsService>();
-
-            services.AddSingleton<IDocumentsService, DocumentsService>(sp =>
-            {
-                var fileStorageService = sp.GetRequiredService<IFileStorageService>();
-                var queueService = sp.GetRequiredService<IQueueService>();
-                var documentRepository = sp.GetRequiredService<DocumentRepository>();
-                return new DocumentsService(fileStorageService, queueService, documentRepository);
-            });
+            services.AddTransient<DocumentRepository>();
+            services.AddTransient<IDocumentsService, DocumentsService>();
 
             //Add QueueInitializer to ensure the queue is up and runnign
             services.AddSingleton<IHostedService, QueueInitializerService>();
