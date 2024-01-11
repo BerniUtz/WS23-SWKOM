@@ -1,22 +1,25 @@
-﻿using Microsoft.Extensions.Configuration;
-using Minio;
-using SWKOM_paperless.BusinessLogic;
-using SWKOM_paperless.OCRWorker;
-using SWKOM_paperless.ServiceAgents;
-using SWKOM_paperless.ServiceAgents.Interfaces;
-using System.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using SWKOM_paperless.BusinessLogic;
 using SWKOM_paperless.DAL;
+using SWKOM_paperless.ServiceAgents;
+
 
 namespace SWKOM_paperless.OCRWorker
 {
-    class Progamm
+    static class Program
     {
         static void Main()
         {
+            // check if the Environment Variable ENVIRONMENT is set to docker
+            // if so, use the OCRWorkerSettings.docker.json file
+            // otherwise use the OCRWorkerSettings.json file
+            var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
+            var settingsFile = environment == "docker" ? "OCRWorkerSettings.docker.json" : "OCRWorkerSettings.json";
+            
             IConfiguration config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("OCRWorkerSettings.json")
+            .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
             .Build();
             
             var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
