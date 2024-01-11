@@ -52,6 +52,7 @@ namespace SWKOM_paperless.OCRWorker
             };
             _documentRepository.AddDocument(newDocument);
             _elasticSearchLogic.AddDocumentAsync(newDocument).Wait();
+
         }
 
 
