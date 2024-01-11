@@ -51,7 +51,7 @@ namespace SWKOM_paperless.OCRWorker
                         elasticSearchOptions.Username,
                         elasticSearchOptions.Password,
                         elasticSearchOptions.IndexName
-                    )
+                    ),
                     new ApplicationDbContext(dbContextOptions)
                 );
 
