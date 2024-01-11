@@ -42,15 +42,6 @@ namespace SWKOM_paperless.OCRWorker
            await _queueService.EnsureQueueExistsAsync(_queue);
            Console.WriteLine($"Queue {_queue} exists");
 
-            var newDocument = new Document()
-            {
-                Id = payload.Result.Id,
-                Title = payload.Result.Filename,
-                Content = pdfStream.ToString(),
-            };
-            _documentRepository.AddDocument(newDocument);
-            _elasticSearchLogic.AddDocumentAsync(newDocument).Wait();
-
            _queueService.Subscribe<QueuePayload>(_queue, HandleMessage);
            
            _exitEvent.WaitOne();
@@ -77,12 +68,15 @@ namespace SWKOM_paperless.OCRWorker
             Stream pdfStream = await getPDFFileStream(message.Filename);
             string pdfContent = _ocrWorker.OcrPdf(pdfStream);
             
-             _documentRepository.AddDocument(new Document()
+             var newDocument = new Document()
             {
                 Id = message.Id,
                 Title = message.Filename,
                 Content = pdfContent,
-            });
+            };
+             
+             _documentRepository.AddDocument(newDocument);
+             _elasticSearchLogic.AddDocumentAsync(newDocument).Wait();
         }
       
         public void Stop()
