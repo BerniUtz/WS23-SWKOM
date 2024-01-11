@@ -27,6 +27,21 @@ services:
       - "5672:5672" # AMQP protocol
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 3
+        
+  ocr_worker:
+    build:
+      dockerfile: ./SWKOM-paperless.OCRWorker/Dockerfile
+      context: .
+    depends_on:
+      - rabbitmq
+      - minio
+    environment:
+      - ENVIRONMENT=docker
   
   minio:
     image: minio/minio
