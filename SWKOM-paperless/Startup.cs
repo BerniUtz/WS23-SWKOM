@@ -107,14 +107,14 @@ namespace Org.OpenAPITools
                 );
             });
             
-            services.AddTransient<DocumentRepository>();
-            services.AddTransient<IDocumentsService, DocumentsService>();
-            
+            services.AddScoped<IElasticSearchLogic, ElasticSearchService>();
+            services.AddScoped<IDocumentsService, DocumentsService>();
+
             services.AddSingleton<IDocumentsService, DocumentsService>(sp =>
             {
                 var config = sp.GetRequiredService<IConfiguration>();
                 var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
-    
+
                 var fileStorageService = sp.GetRequiredService<IFileStorageService>();
                 var queueService = sp.GetRequiredService<IQueueService>();
                 var documentRepository = sp.GetRequiredService<DocumentRepository>();
@@ -124,8 +124,10 @@ namespace Org.OpenAPITools
                     elasticSearchOptions.Password,
                     elasticSearchOptions.IndexName
                 );
+
                 return new DocumentsService(fileStorageService, queueService, documentRepository, elasticSearchService);
             });
+
 
             //Add QueueInitializer to ensure the queue is up and runnign
             services.AddSingleton<IHostedService, QueueInitializerService>();
