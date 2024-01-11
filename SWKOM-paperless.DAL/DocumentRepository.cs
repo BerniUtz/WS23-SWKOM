@@ -35,5 +35,11 @@ namespace SWKOM_paperless.DAL
             _context.Documents?.Remove(document);
             _context.SaveChanges();
         }
+
+        public void UpdateDocument(Document document)
+        {
+            _context.Documents?.Update(document);
+            _context.SaveChanges();
+        } 
     }
 }
