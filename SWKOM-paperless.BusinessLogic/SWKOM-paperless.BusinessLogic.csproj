@@ -10,7 +10,6 @@
     <ItemGroup>
       <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Entities\SWKOM-paperless.BusinessLogic.Entities.csproj" />
       <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Interfaces\SWKOM-paperless.BusinessLogic.Interfaces.csproj" />
-      <ProjectReference Include="..\SWKOM-paperless.DAL\SWKOM-paperless.DAL.csproj" />
     </ItemGroup>
 
     <ItemGroup>

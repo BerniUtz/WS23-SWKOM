@@ -1,20 +1,18 @@
 using Microsoft.AspNetCore.Http;
 using SWKOM_paperless.BusinessLogic.Entities;
 using SWKOM_paperless.BusinessLogic.Interfaces;
-using SWKOM_paperless.DAL;
 
 namespace SWKOM_paperless.BusinessLogic;
 
 public class DocumentsService : IDocumentsService
 {
     private readonly IFileStorageService _fileStorageService;
-    private readonly DocumentRepository _documentRepository;
+
     private readonly IQueueService _queueService;
 
-    public DocumentsService(IFileStorageService fileStorageService, IQueueService queueService, ApplicationDbContext dbContext)
+    public DocumentsService(IFileStorageService fileStorageService, IQueueService queueService)
     {
         _fileStorageService = fileStorageService;
-        _documentRepository = new DocumentRepository(dbContext);
         _queueService = queueService;
     }
 
@@ -28,19 +26,11 @@ public class DocumentsService : IDocumentsService
             var fileName = $"{guid}_{document.FileName}";
             
             await _fileStorageService.UploadFileAsync(document.OpenReadStream(), fileName);
-            
-            var newDocument = new Document()
-            {
-                Title = fileName,
-                Content = document.OpenReadStream().ToString() ?? "",
-            };
-            
-            _documentRepository.AddDocument(newDocument);
 
-            var message = new QueuePayload(newDocument.Id, "BUCKET_PLACEHOLDER", fileName);
+            var message = new QueuePayload("BUCKET_PLACEHOLDER", fileName);
             await _queueService.EnqueueAsync("ocr_queue", message);
             
-            
+            // TODO: Add document to database
         }
     }
 }

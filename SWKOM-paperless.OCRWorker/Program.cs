@@ -1,35 +1,26 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Minio;
 using SWKOM_paperless.BusinessLogic;
-using SWKOM_paperless.DAL;
+using SWKOM_paperless.OCRWorker;
 using SWKOM_paperless.ServiceAgents;
-
+using SWKOM_paperless.ServiceAgents.Interfaces;
+using System.Configuration;
 
 namespace SWKOM_paperless.OCRWorker
 {
-    static class Program
+    class Progamm
     {
         static async Task Main()
         {
             Console.WriteLine("OCRWorker starts");
-
-            // check if the Environment Variable ENVIRONMENT is set to docker
-            // if so, use the OCRWorkerSettings.docker.json file
-            // otherwise use the OCRWorkerSettings.json file
-            var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
-            var settingsFile = environment == "docker" ? "OCRWorkerSettings.docker.json" : "OCRWorkerSettings.json";
-
             IConfiguration config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
+            .AddJsonFile("OCRWorkerSettings.json")
             .Build();
             
             var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
             var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
             var queueName = config["Queue"];
-            var dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(config.GetConnectionString("DefaultConnection")).Options;
-            
-
             
             if(queueOptions == null || fileStorageOptions == null || queueName == null)
                 throw new Exception("Failed to read configuration file.");
@@ -48,8 +39,7 @@ namespace SWKOM_paperless.OCRWorker
                         queueOptions.Port
                     ),
                     queueName,
-                    new OCRClient(),
-                    new ApplicationDbContext(dbContextOptions)
+                    new OCRClient()
                 );
             Console.WriteLine("OCRService starts");
             await client.startAsync();

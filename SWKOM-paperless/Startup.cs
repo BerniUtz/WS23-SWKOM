@@ -85,11 +85,6 @@ namespace Org.OpenAPITools
                     );
             });
             
-            // DB Context zum Service hinzufügen
-            // Connectionstring wird aus appsettings.json gelesen
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-            
             // Add QueueService
             services.AddSingleton<IQueueService, RabbitMQService>(sp =>
             {
@@ -107,12 +102,18 @@ namespace Org.OpenAPITools
             {
                 var fileStorageService = sp.GetRequiredService<IFileStorageService>();
                 var queueService = sp.GetRequiredService<IQueueService>();
-                var dbContext = sp.GetRequiredService<ApplicationDbContext>();
-                return new DocumentsService(fileStorageService, queueService, dbContext);
+                return new DocumentsService(fileStorageService, queueService);
             });
 
             //Add QueueInitializer to ensure the queue is up and runnign
             services.AddSingleton<IHostedService, QueueInitializerService>();
+
+            
+            
+            // DB Context zum Service hinzufügen
+            // Connectionstring wird aus appsettings.json gelesen
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add framework services.
             services
