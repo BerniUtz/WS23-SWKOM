@@ -102,13 +102,16 @@ namespace Org.OpenAPITools
                     rabbitMQOptions.Port
                 );
             });
+            
+            services.AddScoped<DocumentRepository>();
+            services.AddScoped<IDocumentsService, DocumentsService>();
 
             services.AddSingleton<IDocumentsService, DocumentsService>(sp =>
             {
                 var fileStorageService = sp.GetRequiredService<IFileStorageService>();
                 var queueService = sp.GetRequiredService<IQueueService>();
-                var dbContext = sp.GetRequiredService<ApplicationDbContext>();
-                return new DocumentsService(fileStorageService, queueService, dbContext);
+                var documentRepository = sp.GetRequiredService<DocumentRepository>();
+                return new DocumentsService(fileStorageService, queueService, documentRepository);
             });
 
             //Add QueueInitializer to ensure the queue is up and runnign
