@@ -100,11 +100,7 @@ namespace SWKOM_paperless.BusinessLogic
                 var messageBody = Encoding.UTF8.GetString(body);
                 var message = JsonSerializer.Deserialize<T>(messageBody);
 
-                if (message == null)
-                {
-                    //empty message can be ignored
-                }
-                else
+                if(message != null)
                 {
                     messageHandler(message);
                 }
