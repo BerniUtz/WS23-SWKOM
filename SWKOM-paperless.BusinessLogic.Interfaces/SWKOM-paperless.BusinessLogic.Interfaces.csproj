@@ -4,10 +4,15 @@
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>SWKOM_paperless.BusinessLogic.Interfaces</RootNamespace>
         <Nullable>enable</Nullable>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="log4net" Version="2.0.15" />
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SWKOM-paperless.BusinessLogic.Entities\SWKOM-paperless.BusinessLogic.Entities.csproj" />
     </ItemGroup>
 </Project>
