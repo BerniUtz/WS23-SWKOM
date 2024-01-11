@@ -34,7 +34,7 @@ public class DocumentsService : IDocumentsService
             var newDocument = new Document()
             {
                 Title = fileName,
-                Content = document.OpenReadStream().ToString() ?? "",
+                Content = ""
             };
             
             _documentRepository.AddDocument(newDocument);
