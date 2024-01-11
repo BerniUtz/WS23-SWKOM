@@ -57,9 +57,9 @@ namespace SWKOM_paperless.OCRWorker
                 throw new Exception("Invalid Messagebody");
             }
 
-            Console.Write($"retrieved payload {message.filename}");
+            Console.Write($"retrieved payload {message.Filename}");
 
-            Stream pdfStream = await getPDFFileStream(message.filename);
+            Stream pdfStream = await getPDFFileStream(message.Filename);
 
             string pdfContent = _ocrWorker.OcrPdf(pdfStream);
 
