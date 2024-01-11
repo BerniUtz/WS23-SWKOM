@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using SWKOM_paperless.BusinessLogic.Interfaces;
 
 namespace SWKOM_paperless.BusinessLogic
@@ -87,6 +89,27 @@ namespace SWKOM_paperless.BusinessLogic
                 return Task.FromResult(false);
             }
         }
+
+        public void Subscribe<T>(string queueName, Action<T> messageHandler) where T: class
+        {
+            var consumer = new EventingBasicConsumer(_channel);
+
+            consumer.Received += (sender, args) => 
+            {
+                var body = args.Body.ToArray();
+                var messageBody = Encoding.UTF8.GetString(body);
+                var message = JsonSerializer.Deserialize<T>(messageBody);
+                if(message != null)
+                {
+                    messageHandler(message);
+                }
+                
+            };
+
+            // Start consuming messages from the queue
+            _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+        }
+
 
         public void Dispose()
         {

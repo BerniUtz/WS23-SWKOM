@@ -1,16 +1,21 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Minio;
 using SWKOM_paperless.BusinessLogic;
 using SWKOM_paperless.OCRWorker;
 using SWKOM_paperless.ServiceAgents;
 using SWKOM_paperless.ServiceAgents.Interfaces;
+using SWKOM_paperless.DAL;
 using System.Configuration;
+
+
 
 namespace SWKOM_paperless.OCRWorker
 {
     class Progamm
     {
-        static void Main()
+        static async Task Main()
         {
             // check if the Environment Variable ENVIRONMENT is set to docker
             // if so, use the OCRWorkerSettings.docker.json file
@@ -30,16 +35,17 @@ namespace SWKOM_paperless.OCRWorker
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
                 .Build();
-                
-                var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
-                var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
-                var dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(config.GetConnectionString("DefaultConnection")).Options;
-                var queueName = config["Queue"];
-                
-                if(queueOptions == null || fileStorageOptions == null || queueName == null)
-                    throw new Exception("Failed to read configuration file.");
                 try
                 {
+                
+                    var queueOptions = config.GetSection("RabbitMQ").Get<RabbitMQOptions>();
+                    var fileStorageOptions = config.GetSection("MinIO").Get<MinIOOptions>();
+                    var dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(config.GetConnectionString("DefaultConnection")).Options;
+                    var queueName = config["Queue"];
+                    
+                    if(queueOptions == null || fileStorageOptions == null || queueName == null)
+                        throw new Exception("Failed to read configuration file.");
+                
                     OCRService client = new OCRService(
                         new MinioFileStorageService(
                                 fileStorageOptions.Endpoint,
