@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5632d6b7-ade9-4812-8634-fdc97bdb6983",
+		"_postman_id": "6da91e69-465b-4fc3-89bb-3ff361ee143c",
 		"name": "paperless",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "31055451"
+		"_exporter_id": "24696807"
 	},
 	"item": [
 		{
@@ -85,12 +85,133 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Search Document",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const elasticURL = pm.variables.get(\"elasticURL\");",
+							"",
+							"// Set the index to search",
+							"var indexName = \"documents\";",
+							"",
+							"// Set the search query",
+							"var searchTerm = \"TEST123\";",
+							"",
+							"// Elasticsearch search query",
+							"var elasticSearchQuery = {",
+							"    query: {",
+							"        bool: {",
+							"            should: [",
+							"                {",
+							"                    match: {",
+							"                        \"title.keyword\": searchTerm",
+							"                    }",
+							"                },",
+							"                {",
+							"                    match: {",
+							"                        \"content.keyword\": searchTerm",
+							"                    }",
+							"                }",
+							"            ]",
+							"        }",
+							"    }",
+							"};",
+							"",
+							"// Perform Elasticsearch search request",
+							"pm.sendRequest({",
+							"    url: `${elasticURL}/${indexName}/_search`,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(elasticSearchQuery)",
+							"    }",
+							"}, function (err, response) {",
+							"    // Handle the response",
+							"    const data = response.json();",
+							"",
+							"    // store count in variable",
+							"    console.log(data.hits.hits.length)",
+							"    pm.collectionVariables.set(\"amountFoundDocuments\", data.hits.hits.length);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const baseUrl = pm.variables.get(\"baseURL\");",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{elasticURL}}/documents/_search",
+					"host": [
+						"{{elasticURL}}"
+					],
+					"path": [
+						"documents",
+						"_search"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
 			"key": "document_count",
 			"value": ""
+		},
+		{
+			"key": "elasticURL",
+			"value": "http://localhost:9200"
+		},
+		{
+			"key": "amountFoundDocuments",
+			"value": ""
+		},
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8000",
+			"type": "string"
 		}
 	]
 }
