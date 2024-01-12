@@ -5,6 +5,22 @@ services:
     build: ./paperless-ngx-ui
     ports:
       - "80:80"
+        
+  api:
+    build:
+      dockerfile: ./SWKOM-paperless/Dockerfile
+      context: .
+      args:
+        BUILD_CONFIG: Release #Debug
+    depends_on:
+      - postgres
+      - rabbitmq
+      - minio
+      - elasticsearch
+    ports:
+      - "8000:80"
+
+    
   
   postgres:
     image: postgres:latest
