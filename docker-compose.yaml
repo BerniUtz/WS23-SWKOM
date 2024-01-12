@@ -71,7 +71,20 @@ services:
       /usr/bin/mc mb minio/paperless
       "
 
+  elasticsearch:
+    image: elasticsearch:8.11.3
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/var/lib/elasticsearch/data
+    environment:
+      - ELASTIC_PASSWORD=password
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+
 volumes:
   postgres_data:
   rabbitmq_data:
   minio_data:
+  elasticsearch_data:
