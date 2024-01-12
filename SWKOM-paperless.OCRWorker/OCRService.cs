@@ -49,9 +49,7 @@ namespace SWKOM_paperless.OCRWorker
       
         private async Task<Stream> getPDFFileStream(string fileName)
         {
-            //getFile from Minio
             return await _fileStorage.GetFileAsync(fileName);
-
         }
       
         private async void HandleMessage(QueuePayload message)
@@ -61,22 +59,30 @@ namespace SWKOM_paperless.OCRWorker
             var validationResult = validator.Validate(message);
             if (!validationResult.IsValid)
             {
-                throw new Exception("Invalid Messagebody");
+                Console.WriteLine("Invalid message body");
+                return;
             }
 
-            Console.Write($"retrieved payload {message.Filename}");
-            Stream pdfStream = await getPDFFileStream(message.Filename);
-            string pdfContent = _ocrWorker.OcrPdf(pdfStream);
-            
-             var newDocument = new Document()
+            Console.WriteLine($"retrieved payload {message.Filename}");
+            try
             {
-                Id = message.Id,
-                Title = message.Filename,
-                Content = pdfContent,
-            };
-             
-             _documentRepository.AddDocument(newDocument);
-             _elasticSearchLogic.AddDocumentAsync(newDocument).Wait();
+                Stream pdfStream = await getPDFFileStream(message.Filename);
+                string pdfContent = _ocrWorker.OcrPdf(pdfStream);
+
+                 var newDocument = new Document()
+                {
+                    Id = message.Id,
+                    Title = message.Filename,
+                    Content = pdfContent,
+                };
+
+                 _documentRepository.UpdateDocument(newDocument);
+                 _elasticSearchLogic.AddDocumentAsync(newDocument).Wait();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Could not OCR Document {e.Message}");
+            }
         }
       
         public void Stop()
