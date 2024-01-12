@@ -26,6 +26,23 @@ namespace SWKOM_paperless.DAL
         {
             return _context.Documents?.Find(id);
         }
+
+        public void UpdateDocument(Document updatedDocument)
+        {
+            var existingDocument = _context.Documents?.Find(updatedDocument.Id);
+
+            if (existingDocument == null)
+            {
+                AddDocument(updatedDocument);
+                return;
+            }
+
+            existingDocument.Title = updatedDocument.Title;
+            existingDocument.Content = updatedDocument.Content;
+            
+
+            _context.SaveChanges();
+        }
         
         public void DeleteDocument(int id)
         {
