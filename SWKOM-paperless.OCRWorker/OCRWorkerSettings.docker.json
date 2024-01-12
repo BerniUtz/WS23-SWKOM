@@ -16,7 +16,7 @@
 		"Endpoint": "http://elasticsearch:9200",
 		"AccessKey": "elastic",
 		"SecretKey": "password",
-		"BucketName": "documents"
+		"IndexName": "documents"
 	},
 	"ConnectionStrings": {
 		"DefaultConnection": "Host=postgres;Port=5432;Database=paperless;Username=postgres;Password=postgres;"
