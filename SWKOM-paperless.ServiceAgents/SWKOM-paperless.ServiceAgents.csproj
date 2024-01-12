@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>SWKOM_paperless.ServiceAgents</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.4.0" />
+    <PackageReference Include="Magick.NET.Core" Version="13.4.0" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SWKOM-paperless.ServiceAgents.Interfaces\SWKOM-paperless.ServiceAgents.Interfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="$(NuGetPackageRoot)tesseract\5.2.0\x86\tesseract50.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="$(NuGetPackageRoot)tesseract\5.2.0\x86\leptonica-1.82.0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="$(NuGetPackageRoot)tesseract\5.2.0\x64\tesseract50.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="$(NuGetPackageRoot)tesseract\5.2.0\x64\leptonica-1.82.0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="tessdata\deu.traineddata">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="tessdata\eng.traineddata">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="tessdata\pdf.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+  <Target Name="link_deps" AfterTargets="Build">
+    <Exec
+            Command="ln -sf /opt/homebrew/Cellar/leptonica/1.83.1/lib/libleptonica.dylib $(OutDir)x64/libleptonica-1.82.0.dylib"
+            Condition="Exists('/opt/homebrew/Cellar/leptonica/1.83.1/lib/libleptonica.dylib')"
+    />
+    <Exec
+            Command="ln -sf /opt/homebrew/Cellar/tesseract/5.3.2_1/lib/libtesseract.dylib $(OutDir)x64/libtesseract50.dylib"
+            Condition="Exists('/opt/homebrew/Cellar/tesseract/5.3.2_1/lib/libtesseract.dylib')"
+    />
+    <Exec
+            Command="ln -sf /usr/lib/x86_64-linux-gnu/libdl.so.2 $(OutDir)libdl.so"
+            Condition="Exists('/usr/lib/x86_64-linux-gnu/libdl.so.2')"
+    />
+    <Exec
+            Command="ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so $(OutDir)x64/libleptonica-1.82.0.so"
+            Condition="Exists('/usr/lib/x86_64-linux-gnu/libleptonica.so')"
+    />
+    <Exec
+            Command="ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so $(OutDir)x64/libtesseract50.so"
+            Condition="Exists('/usr/lib/x86_64-linux-gnu/libtesseract.so')"
+    />
+  </Target>
+</Project>

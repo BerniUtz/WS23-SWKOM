@@ -17,7 +17,7 @@ namespace SWKOM_paperless.BusinessLogic.Entities
         public int? StoragePath { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public List<int> Tags { get; set; }
+        public List<int> Tags { get; set; } = new List<int>();
         /*
         public DateTime Created { get; set; }
         public DateTime CreatedDate { get; set; }

@@ -1,32 +1,15 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+WORKDIR /App
 
-# Container we use for final publish
-FROM mcr.microsoft.com/dotnet/core/aspnet:6.0-buster-slim AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+# Copy everything
+COPY . ./
+# Restore as distinct layers
+RUN dotnet restore
+# Build and publish a release
+RUN dotnet publish -c Release -o out
 
-# Build container
-FROM mcr.microsoft.com/dotnet/core/sdk:6.0-buster AS build
-
-# Copy the code into the container
-WORKDIR /src
-COPY ["src/Org.OpenAPITools/Org.OpenAPITools.csproj", "Org.OpenAPITools/"]
-
-# NuGet restore
-RUN dotnet restore "Org.OpenAPITools/Org.OpenAPITools.csproj"
-COPY ["src/Org.OpenAPITools/", "Org.OpenAPITools/"]
-
-# Build the API
-WORKDIR "Org.OpenAPITools"
-RUN dotnet build "Org.OpenAPITools.csproj" -c Release -o /app/build
-
-# Publish it
-FROM build AS publish
-RUN dotnet publish "Org.OpenAPITools.csproj" -c Release -o /app/publish
-
-# Make the final image for publishing
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Org.OpenAPITools.dll"]
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /App
+COPY --from=build-env /App/out .
+ENTRYPOINT ["dotnet", "SWKOM-paperless.dll"]

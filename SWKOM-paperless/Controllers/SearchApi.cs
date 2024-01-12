@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Newtonsoft.Json;
 using Org.OpenAPITools.Attributes;
 using Org.OpenAPITools.Models;
+using SWKOM_paperless.BusinessLogic.Interfaces;
+using Document = SWKOM_paperless.BusinessLogic.Entities.Document;
 
 namespace Org.OpenAPITools.Controllers
 { 
@@ -38,13 +41,18 @@ namespace Org.OpenAPITools.Controllers
         [Route("/api/search/autocomplete")]
         [ValidateModelState]
         [SwaggerOperation("AutoComplete")]
-        public virtual IActionResult AutoComplete([FromQuery (Name = "term")]string term, [FromQuery (Name = "limit")]int? limit)
+        public virtual async Task<ListResponse<Document>> AutoComplete(
+            [FromQuery (Name = "term")]string term, 
+            [FromQuery (Name = "limit")]int? limit,
+            [FromServices] IElasticSearchLogic elasticSearchLogic
+            )
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            var result = await elasticSearchLogic.SearchDocumentsAsync(term, "documents");
+            return new ListResponse<Document>()
+            {
+                Count = result.Count,
+                Results = result
+            };
         }
     }
 }

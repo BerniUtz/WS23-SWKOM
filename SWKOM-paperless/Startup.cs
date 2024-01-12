@@ -84,6 +84,15 @@ namespace Org.OpenAPITools
                     minioOptions.BucketName
                     );
             });
+ 
+            // DB Context zum Service hinzufügen
+            // Connectionstring wird aus appsettings.json gelesen
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly("SWKOM-paperless")
+                    )
+                );
             
             // Add QueueService
             services.AddSingleton<IQueueService, RabbitMQService>(sp =>
@@ -97,16 +106,25 @@ namespace Org.OpenAPITools
                     rabbitMQOptions.Port
                 );
             });
+            
+            services.AddTransient<DocumentRepository>();
+            services.AddTransient<IDocumentsService, DocumentsService>();
+            
+            services.AddSingleton<IElasticSearchLogic, ElasticSearchService>(sp =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
+                return new ElasticSearchService(
+                    elasticSearchOptions.Endpoint,
+                    elasticSearchOptions.Username,
+                    elasticSearchOptions.Password,
+                    elasticSearchOptions.IndexName
+                );
+            });
+
 
             //Add QueueInitializer to ensure the queue is up and runnign
             services.AddSingleton<IHostedService, QueueInitializerService>();
-
-            
-            
-            // DB Context zum Service hinzufügen
-            // Connectionstring wird aus appsettings.json gelesen
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add framework services.
             services
@@ -162,7 +180,7 @@ namespace Org.OpenAPITools
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -172,6 +190,9 @@ namespace Org.OpenAPITools
             {
                 app.UseHsts();
             }
+            
+            // The application should apply pending migrations automatically at startup.
+            context.Database.Migrate();
 
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
