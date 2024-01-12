@@ -37,11 +37,14 @@ services:
     build:
       dockerfile: ./SWKOM-paperless.OCRWorker/Dockerfile
       context: .
+      args:
+        BUILD_CONFIG: Release #Debug
     depends_on:
       - rabbitmq
       - minio
     environment:
       - ENVIRONMENT=docker
+    
   
   minio:
     image: minio/minio

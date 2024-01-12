@@ -23,7 +23,7 @@ namespace SWKOM_paperless.OCRWorker
             var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
             var settingsFile = environment == "docker" ? "OCRWorkerSettings.docker.json" : "OCRWorkerSettings.json";
             
-            int maxAttempts = 3;
+            int maxAttempts = 6;
             int currentAttempt = 0;
 
             while(currentAttempt < maxAttempts)
@@ -42,7 +42,7 @@ namespace SWKOM_paperless.OCRWorker
                     var elasticSearchOptions = config.GetSection("ElasticSearch").Get<ElasticSearchOptions>();
                     var queueName = config["Queue"];
                     
-                    if(queueOptions == null || fileStorageOptions == null || queueName == null)
+                    if(queueOptions == null || fileStorageOptions == null || queueName == null || dbContextOptions == null || elasticSearchOptions == null)
                         throw new Exception("Failed to read configuration file.");
                 
                     OCRService client = new OCRService(
