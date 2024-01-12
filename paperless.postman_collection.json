@@ -1,217 +1,232 @@
 {
-	"info": {
-		"_postman_id": "6da91e69-465b-4fc3-89bb-3ff361ee143c",
-		"name": "paperless",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "24696807"
-	},
-	"item": [
-		{
-			"name": "Upload Document",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const baseUrl = pm.variables.get(\"baseURL\");",
-							"",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Document is uploaded (more documents are stored compared to pre-request fetch)\", function () {",
-							"    pm.sendRequest(`${baseUrl}/api/documents`, function (err, response) {",
-							"        const data = response.json();",
-							"        const countBefore = pm.collectionVariables.get(\"document_count\");",
-							"        pm.expect(countBefore < data.count, \"Count did not increase\")",
-							"        ",
-							"    })",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"const baseURL = pm.variables.get(\"baseURL\");",
-							"",
-							"// this stores the current count of documents inside a variable,",
-							"// so we can test if another document was successfully stored inside the",
-							"// database.",
-							"",
-							"pm.sendRequest(`${baseURL}/api/documents`, function (err, response) {",
-							"    const data = response.json();",
-							"",
-							"    // store count in variable",
-							"    pm.collectionVariables.set(\"document_count\", data.count);",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "document",
-							"type": "file",
-							"src": "SWKOM-paperless.ServiceAgents.Tests/TEST.pdf"
-						},
-						{
-							"key": "title",
-							"value": "TEST_TITLE",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{baseURL}}/api/documents/post_document",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"documents",
-						"post_document"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Search Document",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"const elasticURL = pm.variables.get(\"elasticURL\");",
-							"",
-							"// Set the index to search",
-							"var indexName = \"documents\";",
-							"",
-							"// Set the search query",
-							"var searchTerm = \"TEST123\";",
-							"",
-							"// Elasticsearch search query",
-							"var elasticSearchQuery = {",
-							"    query: {",
-							"        bool: {",
-							"            should: [",
-							"                {",
-							"                    match: {",
-							"                        \"title.keyword\": searchTerm",
-							"                    }",
-							"                },",
-							"                {",
-							"                    match: {",
-							"                        \"content.keyword\": searchTerm",
-							"                    }",
-							"                }",
-							"            ]",
-							"        }",
-							"    }",
-							"};",
-							"",
-							"// Perform Elasticsearch search request",
-							"pm.sendRequest({",
-							"    url: `${elasticURL}/${indexName}/_search`,",
-							"    method: 'POST',",
-							"    header: {",
-							"        'Content-Type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(elasticSearchQuery)",
-							"    }",
-							"}, function (err, response) {",
-							"    // Handle the response",
-							"    const data = response.json();",
-							"",
-							"    // store count in variable",
-							"    console.log(data.hits.hits.length)",
-							"    pm.collectionVariables.set(\"amountFoundDocuments\", data.hits.hits.length);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const baseUrl = pm.variables.get(\"baseURL\");",
-							"",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "{{elasticURL}}/documents/_search",
-					"host": [
-						"{{elasticURL}}"
-					],
-					"path": [
-						"documents",
-						"_search"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "document_count",
-			"value": ""
-		},
-		{
-			"key": "elasticURL",
-			"value": "http://localhost:9200"
-		},
-		{
-			"key": "amountFoundDocuments",
-			"value": ""
-		},
-		{
-			"key": "baseURL",
-			"value": "http://localhost:8000",
-			"type": "string"
-		}
-	]
+  "info": {
+    "_postman_id": "f445cac7-e07d-4618-a639-2af90f3239c3",
+    "name": "paperless",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "24696807"
+  },
+  "item": [
+    {
+      "name": "Upload Document",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const baseUrl = pm.variables.get(\"baseURL\");",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Document is uploaded (more documents are stored compared to pre-request fetch)\", function () {",
+              "    pm.sendRequest(`${baseUrl}/api/documents`, function (err, response) {",
+              "        const data = response.json();",
+              "        const countBefore = pm.collectionVariables.get(\"document_count\");",
+              "        pm.expect(countBefore < data.count, \"Count did not increase\")",
+              "        ",
+              "    })",
+              "});",
+              "",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const baseURL = pm.variables.get(\"baseURL\");",
+              "",
+              "// this stores the current count of documents inside a variable,",
+              "// so we can test if another document was successfully stored inside the",
+              "// database.",
+              "",
+              "pm.sendRequest(`${baseURL}/api/documents`, function (err, response) {",
+              "    const data = response.json();",
+              "",
+              "    // store count in variable",
+              "    pm.collectionVariables.set(\"document_count\", data.count);",
+              "})"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "document",
+              "type": "file",
+              "src": "SWKOM-paperless.ServiceAgents.Tests/TEST.pdf"
+            },
+            {
+              "key": "title",
+              "value": "TEST_TITLE",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/documents/post_document",
+          "host": ["{{baseURL}}"],
+          "path": ["api", "documents", "post_document"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Document",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const elasticURL = pm.variables.get(\"elasticURL\");",
+              "",
+              "// Set the index to search",
+              "var indexName = \"documents\";",
+              "",
+              "// Set the search query",
+              "var searchTerm = \"TEST123\";",
+              "",
+              "// Elasticsearch search query",
+              "var elasticSearchQuery = {",
+              "    query: {",
+              "        bool: {",
+              "            should: [",
+              "                {",
+              "                    match: {",
+              "                        \"title.keyword\": searchTerm",
+              "                    }",
+              "                },",
+              "                {",
+              "                    match: {",
+              "                        \"content.keyword\": searchTerm",
+              "                    }",
+              "                }",
+              "            ]",
+              "        }",
+              "    }",
+              "};",
+              "",
+              "// Perform Elasticsearch search request",
+              "pm.sendRequest({",
+              "    url: `${elasticURL}/${indexName}/_search`,",
+              "    method: 'POST',",
+              "    header: {",
+              "        'Content-Type': 'application/json'",
+              "    },",
+              "    body: {",
+              "        mode: 'raw',",
+              "        raw: JSON.stringify(elasticSearchQuery)",
+              "    }",
+              "}, function (err, response) {",
+              "    // Handle the response",
+              "    const data = response.json();",
+              "",
+              "    // store count in variable",
+              "    console.log(data.hits.hits.length)",
+              "    pm.collectionVariables.set(\"amountFoundDocuments\", data.hits.hits.length);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const baseUrl = pm.variables.get(\"baseURL\");",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{elasticURL}}/documents/_search",
+          "host": ["{{elasticURL}}"],
+          "path": ["documents", "_search"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Document",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/search/autocomplete",
+          "host": ["{{baseURL}}"],
+          "path": ["api", "search", "autocomplete"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "document_count",
+      "value": ""
+    },
+    {
+      "key": "elasticURL",
+      "value": "http://localhost:9200"
+    },
+    {
+      "key": "amountFoundDocuments",
+      "value": ""
+    },
+    {
+      "key": "baseURL",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
 }
